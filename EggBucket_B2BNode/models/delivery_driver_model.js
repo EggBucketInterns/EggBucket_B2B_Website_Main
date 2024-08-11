@@ -15,7 +15,8 @@ const deliveryDriverSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    select:false
   },
   phoneNumber: {
     type: String,

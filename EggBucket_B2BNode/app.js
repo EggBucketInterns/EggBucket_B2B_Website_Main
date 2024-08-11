@@ -4,12 +4,17 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require("cors"); // Import the cors middleware
+const dotenv=require('dotenv')
+
+dotenv.config({path:'./config.env'})
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var outletpartnerRouter=require('./routes/outlet_partner')
 var deliverypartnerRoute=require('./routes/delivery_driver')
 var customerRouter=require('./routes/customer')
+var vendorRouter=require('./routes/vendor')
+var orderRouter=require('./routes/order')
 
 require("./models/db");
 
@@ -31,6 +36,8 @@ app.use('/users', usersRouter);
 app.use('/outletPartners',outletpartnerRouter)
 app.use('/deliveryDrivers', deliverypartnerRoute);
 app.use('/customers',customerRouter)
+app.use('/vendors',vendorRouter)
+app.use('/orders',orderRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -2,7 +2,7 @@ const DeliveryDriver = require("../models/delivery_driver_model");
 const fs=require('fs')
 const path = require('path');
   
-const removeImg =require('./imageRemove')
+const removeImg =require('../utils/imageRemove')
 
 
 
@@ -84,6 +84,7 @@ exports.updateDeliveryDriver = async (req, res) => {
     // Find the driver and update
     const driver = await DeliveryDriver.findById(driverId);
     if (!driver) {
+      await removeImg('deliveryDriver',req.file.filename)
       return res.status(404).json({ error: "Driver not found" });
     }
 
