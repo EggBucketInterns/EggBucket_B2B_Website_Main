@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, ChevronDown, RotateCcw, Edit, Delete, Trash } from 'lucide-react';
 
@@ -7,14 +6,15 @@ const OrderDetails = () => {
   const [dateFilter, setDateFilter] = useState('Date');
   const [outletFilter, setOutletFilter] = useState('Outlet');
   const [customerFilter, setCustomerFilter] = useState('Customer');
-  const [orders, setOrders] = useState([]); // State to store orders data
+  const [statusFilter, setStatusFilter] = useState('Status'); 
+  const [orders, setOrders] = useState([]); 
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await fetch('http://127.0.0.1:3577/orders/egg-bucket-b2b/getAllOrder');
         const data = await response.json();
-        setOrders(data); // Store the data in the state
+        setOrders(data); 
       } catch (error) {
         console.error('Error fetching orders:', error);
       }
@@ -48,6 +48,7 @@ const OrderDetails = () => {
           <FilterDropdown value={dateFilter} onChange={setDateFilter} options={['Date', 'This Week', 'This Month', 'This Year']} />
           <FilterDropdown value={outletFilter} onChange={setOutletFilter} options={['Outlet', 'Outlet 1', 'Outlet 2', 'Outlet 3']} />
           <FilterDropdown value={customerFilter} onChange={setCustomerFilter} options={['Customer', 'Customer 1', 'Customer 2', 'Customer 3']} />
+          <FilterDropdown value={statusFilter} onChange={setStatusFilter} options={['Status', 'Completed', 'In Transit', 'Pending']} /> {/* Added filter dropdown for status */}
           <button className="flex items-center px-4 py-2 text-blue-600 font-medium text-sm">
             <RotateCcw className="w-4 h-4 mr-2" />
             Reset Filter
@@ -63,7 +64,7 @@ const OrderDetails = () => {
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">NUMBER OF TRAYS</th>
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">DELIVERY PARTNER</th>
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">AMOUNT COLLECTED</th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">ACTIONS</th>
+                <th className="text-left p-3 text-sm font-semibold text-gray-600">STATUS</th> 
               </tr>
             </thead>
             <tbody>
@@ -80,14 +81,7 @@ const OrderDetails = () => {
                     {order.deliveryId ? order.deliveryId.firstName : 'N/A'}
                   </td>
                   <td className="p-3 text-sm">${order.amount}</td>
-                  <td className="p-3">
-                    <button className="text-purple-600">
-                      <Edit className="w-5 h-5" />
-                    </button>&nbsp;
-                    <button className="text-red-600">
-                      <Trash className="w-5 h-5" />
-                    </button>
-                  </td>
+                  <td className="p-3 text-sm">{order.status}</td> 
                 </tr>
               ))}
             </tbody>

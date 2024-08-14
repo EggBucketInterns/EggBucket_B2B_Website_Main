@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, Search, RotateCcw, Edit, Trash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import EditDeliveryPartner from '../components/forms/EditDeliveryPartner';
 
 const DeliveryPartnerDetails = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [deliveryPartners, setDeliveryPartners] = useState([]);
+  const [editingPartner, setEditingPartner] = useState(null);
 
   const fetchDeliveryPartners = async (query) => {
     try {
@@ -25,6 +27,35 @@ const DeliveryPartnerDetails = () => {
 
     fetchDeliveryPartners('?firstName=');
   }, []);
+
+  const handleEditClick = (partner) => {
+    setEditingPartner(partner);
+  };
+
+  const handleCloseEdit = () => {
+    setEditingPartner(null);
+  };
+
+  const handleSaveEdit = async (formData) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:3577/deliveryDrivers/egg-bucket-b2b/update-delivery_partner/${editingPartner._id}`, {
+        method: 'PUT',
+        body: formData
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // Update the partner in the local state
+        setDeliveryPartners(partners => partners.map(p => p._id === editingPartner._id ? data : p));
+        setEditingPartner(null);
+        alert('Delivery partner updated successfully');
+      } else {
+        alert('Failed to update delivery partner');
+      }
+    } catch (error) {
+      console.error('Error updating delivery partner:', error);
+      alert('Error updating delivery partner');
+    }
+  };
 
  
 
@@ -68,7 +99,7 @@ const DeliveryPartnerDetails = () => {
           <table className="w-full">
             <thead>
               <tr className="bg-gray-100">
-                <th className="text-left p-2 text-sm font-semibold text-gray-600">ID</th>
+                {/* <th className="text-left p-2 text-sm font-semibold text-gray-600">ID</th> */}
                 <th className="text-left p-2 text-sm font-semibold text-gray-600">NAME</th>
                 <th className="text-left p-2 text-sm font-semibold text-gray-600">PHONE NO</th>
                 <th className="text-left p-2 text-sm font-semibold text-gray-600">DRIVER LICENSE</th>
@@ -79,7 +110,7 @@ const DeliveryPartnerDetails = () => {
             <tbody>
               {deliveryPartners.map(partner => (
                 <tr key={partner._id}>
-                  <td className="text-left p-2 text-sm text-gray-600">{partner._id}</td>
+                  {/* <td className="text-left p-2 text-sm text-gray-600">{partner._id}</td> */}
                   <td className="text-left p-2 text-sm text-gray-600">{`${partner.firstName} ${partner.lastName}`}</td>
                   <td className="text-left p-2 text-sm text-gray-600">{partner.phoneNumber}</td>
                   <td className="text-left p-2 text-sm text-gray-600">{partner.driverLicenceNumber || 'N/A'}</td>
@@ -87,7 +118,7 @@ const DeliveryPartnerDetails = () => {
                     <img src={partner.img} alt={partner.firstName} className="w-12 h-12 object-cover rounded-md" />
                   </td>
                   <td className="text-left p-2 text-sm text-gray-600">
-                    <button className='text-purple-600'>
+                    <button className='text-purple-600' onClick={() => handleEditClick(partner)}>
                       <Edit className='w-5 h-5'/>
                     </button>&nbsp;
                     <button className='text-red-600'>
@@ -106,6 +137,13 @@ const DeliveryPartnerDetails = () => {
           </table>
         </div>
       </div>
+      {editingPartner && (
+        <EditDeliveryPartner 
+          partner={editingPartner}
+          onClose={handleCloseEdit}
+          onSave={handleSaveEdit}
+        />
+      )}
     </div>
   );
 };
