@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, ChevronDown, Search, RotateCcw, Edit, Trash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import EditCustomer from '../components/forms/EditCustomer';
 
 const CustomerDetails = () => {
   const navigate = useNavigate();
   const [outlet, setOutlet] = useState('Outlet');
   const [searchTerm, setSearchTerm] = useState('');
   const [customers, setCustomers] = useState([]);
+  const [editingCustomer, setEditingCustomer] = useState(null);
 
   const fetchCustomers = async (query) => {
     try {
@@ -25,6 +27,35 @@ const CustomerDetails = () => {
   useEffect(() => {
     fetchCustomers('?customerName=');
   }, []);
+
+  const handleEditClick = (customer) => {
+    setEditingCustomer(customer);
+  };
+
+  const handleCloseEdit = () => {
+    setEditingCustomer(null);
+  };
+
+  const handleSaveEdit = async (formData) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:3577/customers/egg-bucket-b2b/update-customer/${editingCustomer._id}`, {
+        method: 'PUT',
+        body: formData
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // Update the customer in the local state
+        setCustomers(customers.map(c => c._id === editingCustomer._id ? data : c));
+        setEditingCustomer(null);
+        alert('Customer updated successfully');
+      } else {
+        alert('Failed to update customer');
+      }
+    } catch (error) {
+      console.error('Error updating customer:', error);
+      alert('Error updating customer');
+    }
+  };
 
 
   return (
@@ -101,7 +132,7 @@ const CustomerDetails = () => {
                   </td>
                   <td className="text-left p-2 text-sm text-gray-600">{customer.phoneNumber}</td>
                   <td className="text-left p-2 text-sm text-gray-600">
-                    <button className='text-purple-600'>
+                    <button className='text-purple-600' onClick={() => handleEditClick(customer)}>
                       <Edit className='w-5 h-5'/>
                     </button>&nbsp;
                     <button className='text-red-600'>
@@ -115,6 +146,13 @@ const CustomerDetails = () => {
           </table>
         </div>
       </div>
+      {editingCustomer && (
+        <EditCustomer 
+          customer={editingCustomer}
+          onClose={handleCloseEdit}
+          onSave={handleSaveEdit}
+        />
+      )}
     </div>
   );
 };

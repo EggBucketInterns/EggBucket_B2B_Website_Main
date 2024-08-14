@@ -34,45 +34,37 @@ const MenuItem = ({ icon: Icon, text, active, onClick }) => (
   </li>
 );
 
-const Sidebar = () => {
+const Sidebar = ({ onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const menuItems = [
     { icon: LayoutDashboard, text: 'Dashboard', path: '/' },
     { icon: Store, text: 'Outlet Dashboard', path: '/outlets' },
-    // { icon: Package, text: 'Products', path: '/pack' },
-    // { icon: Heart, text: 'Favorites', path: '/favorites' },
-    // { icon: MessageSquare, text: 'Inbox', path: '/inbox' },
     { icon: List, text: 'Order Lists', path: '/order' },
     { icon: Clipboard, text: 'Outlet Details', path: '/outlet-details' },
     { icon: UserCircle, text: 'Customer Details', path: '/customer' },
-    { icon: Truck, text: 'Delivery Partner Details', path: '/delivery-partners' }, // Updated path
-    { icon: User, text: 'Outlet Partner Details', path: '/outlet-partners' }, // Updated path
-    // { icon: Box, text: 'Product Stock', path: '/stock' },
+    { icon: Truck, text: 'Delivery Partner Details', path: '/delivery-partners' },
+    { icon: User, text: 'Outlet Partner Details', path: '/outlet-partners' },
   ];
 
   const pageItems = [
-    // { icon: Tag, text: 'Pricing', path: '/pricing' },
-    // { icon: Calendar, text: 'Calendar', path: '/calendar' },
-    // { icon: CheckSquare, text: 'To-Do', path: '/todo' },
     { icon: Users, text: 'Forms', path: '/contact' },
-    // { icon: FileText, text: 'Invoice', path: '/invoice' },
-    // { icon: Layers, text: 'UI Elements', path: '/ui-elements' },
-    // { icon: UserPlus, text: 'Team', path: '/team' },
-    // { icon: TableIcon, text: 'Table', path: '/table' },
     { icon: Settings, text: 'Settings', path: '/settings' },
     { icon: LogOut, text: 'Logout', path: '/logout' },
   ];
 
   const handleItemClick = (path) => {
-    navigate(path);
+    if (path === '/logout') {
+      onLogout();  // Call the logout function passed as a prop
+    } else {
+      navigate(path);
+    }
   };
 
   return (
     <aside className="w-64 h-screen bg-white border-r border-gray-200 overflow-y-auto">
       <br />
-     
       <nav>
         <ul className="px-2">
           {menuItems.map((item) => (
@@ -85,11 +77,9 @@ const Sidebar = () => {
             />
           ))}
         </ul>
-       
         <div className="mt-8 mb-4 px-4">
           <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">PAGES</h2>
         </div>
-       
         <ul className="px-2">
           {pageItems.map((item) => (
             <MenuItem

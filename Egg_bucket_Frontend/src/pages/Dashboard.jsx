@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, Package, CheckCircle, Clock, TrendingUp } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { Building2, Package, CheckCircle, Clock, TrendingUp, Coins } from 'lucide-react';
+// import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 
 // Sample data for the chart
-const chartData = [
-  { name: '5k', value: 20 },
-  { name: '10k', value: 40 },
-  { name: '15k', value: 30 },
-  { name: '20k', value: 90 },
-  { name: '25k', value: 50 },
-  { name: '30k', value: 45 },
-  { name: '35k', value: 60 },
-  { name: '40k', value: 45 },
-  { name: '45k', value: 70 },
-  { name: '50k', value: 60 },
-  { name: '55k', value: 55 },
-  { name: '60k', value: 55 },
-];
+// const chartData = [
+//   { name: '5k', value: 20 },
+//   { name: '10k', value: 40 },
+//   { name: '15k', value: 30 },
+//   { name: '20k', value: 90 },
+//   { name: '25k', value: 50 },
+//   { name: '30k', value: 45 },
+//   { name: '35k', value: 60 },
+//   { name: '40k', value: 45 },
+//   { name: '45k', value: 70 },
+//   { name: '50k', value: 60 },
+//   { name: '55k', value: 55 },
+//   { name: '60k', value: 55 },
+// ];
 
 const Dashboard = () => {
   
@@ -82,13 +82,23 @@ const Dashboard = () => {
       </div>
 
       
-      <Link to="/" className="block">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StatCard title="Total Amount Collected" value={`$${summary.totalAmtCollected}`} icon={<TrendingUp className="text-green-500" />} />
-        </div>
-      </Link>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <Link to="/" className="block">
+          <StatCard title="Total Amount Collected" 
+          value={`₹${summary.totalAmtCollected}`} 
+          icon={<TrendingUp className="text-green-500" />} />
+        </Link>
+
+        <Link to="/" className="block">
+          <StatCard
+            title="Total Amount Pending"
+            value={`₹${summary.totalAmtCollected}`}
+            icon={<Coins className="text-blue-500" />}
+          />
+        </Link>
+      </div>
       
-      <div className="bg-white p-6 rounded-lg shadow">
+      {/* <div className="bg-white p-6 rounded-lg shadow">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Number of Orders - Total</h2>
           <select className="border rounded p-2">
@@ -103,7 +113,7 @@ const Dashboard = () => {
             <Line type="monotone" dataKey="value" stroke="#4F46E5" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
-      </div>
+      </div> */}
     </div>
   );
 };
