@@ -46,7 +46,7 @@ exports.createDeliveryDriver = async (req, res) => {
 exports.getAllDeliveryDrivers = async (req, res) => {
   try {
     
-    const apiFeatures = new ApiFeatures(DeliveryDriver.find(), req.query)
+    const apiFeatures = new ApiFeatures(DeliveryDriver.find().select('+password'), req.query)
       .filtering()    // Apply filtering
       .paginaton()
 
