@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const cors = require("cors"); // Import the cors middleware
+const cors = require("cors");
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './config.env' });
@@ -32,8 +32,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Serve static files from React app's build folder
-app.use(express.static(path.join(__dirname, 'Egg_bucket_Frontend/build')));
+// Serve static files from Vite's dist folder
+app.use(express.static(path.join(__dirname, 'Egg_bucket_Frontend/dist')));
 
 // Define API routes
 app.use('/', indexRouter);
@@ -49,7 +49,7 @@ app.use('/payment', paymentRouter);
 
 // Catch-all route: Serve React app for any other routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Egg_bucket_Frontend/build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'Egg_bucket_Frontend/dist', 'index.html'));
 });
 
 // Error handling for 404
