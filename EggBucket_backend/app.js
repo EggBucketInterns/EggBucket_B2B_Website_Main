@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Serve static files from Vite's dist folder
-app.use(express.static(path.join(__dirname, 'Egg_bucket_Frontend/dist')));
+app.use(express.static(path.join(__dirname, '../Egg_bucket_Frontend/dist')));
 
 // Define API routes
 app.use('/', indexRouter);
@@ -49,7 +49,7 @@ app.use('/payment', paymentRouter);
 
 // Catch-all route: Serve React app for any other routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Egg_bucket_Frontend/dist', 'index.html'));
+  res.sendFile(path.join(__dirname, '../Egg_bucket_Frontend/dist', 'index.html'));
 });
 
 // Error handling for 404
