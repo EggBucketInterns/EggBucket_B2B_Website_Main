@@ -41,7 +41,7 @@ exports.createOutletPartner = async (req, res) => {
 exports.getAllPartners = async (req, res) => {
   try {
     
-    const apiFeatures = new ApiFeatures(OutletPartner.find(), req.query)
+    const apiFeatures = new ApiFeatures(OutletPartner.find().select('+password'), req.query)
       .filtering()    // Apply filtering
       .paginaton()    // Apply pagination
       
