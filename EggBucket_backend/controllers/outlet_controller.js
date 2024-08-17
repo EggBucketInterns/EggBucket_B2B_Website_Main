@@ -2,6 +2,8 @@ const Outlet = require("../models/outlet_model");
 const ApiFeatures=require('../utils/apifeatures')
 const removeImg = require("../utils/imageRemove");
 const OutletPartner=require('../models/outlet_partner_model')
+const Customer=require('../models/customer_model');
+const mongoose=require('mongoose')
 
 exports.createOutlet = async (req, res) => {
   try {
@@ -166,6 +168,16 @@ exports.updateOutlet = async (req, res) => {
 exports.deleteOutlet = async (req, res) => {
   try {
     const outletId = req.params.id;
+
+    //checing if this outlet has any customers
+    const oid = new mongoose.Types.ObjectId(outletId)
+    const customer=await Customer.findOne({outlet:oid})
+    if(customer){
+          return res.status(400).json({
+            status:"fail",
+            error:`Customer ${customer.customerId} is assigned to this outlet`
+          })
+    }
 
     const outlet = await Outlet.findById(outletId);
     if (!outlet) {

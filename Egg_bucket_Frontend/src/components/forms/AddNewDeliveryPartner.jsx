@@ -18,7 +18,7 @@ const AddNewDeliveryPartner = () => {
   useEffect(() => {
     const generatePassword = () => {
       const timestamp = Date.now();
-      return `DP_${timestamp}`;
+      return `DP_${timestamp%1000}`;
     };
     setFormData(prevState => ({
       ...prevState,
@@ -67,7 +67,7 @@ const AddNewDeliveryPartner = () => {
     formDataToSubmit.append('img', formData.img);
 
     try {
-      const response = await fetch('https://eggbucket-frontend.onrender.com/deliveryDrivers/egg-bucket-b2b/create-delivery_partner', {
+      const response = await fetch('https://eggbucket-api.onrender.com/deliveryDrivers/egg-bucket-b2b/create-delivery_partner', {
         method: 'POST',
         body: formDataToSubmit,
       });

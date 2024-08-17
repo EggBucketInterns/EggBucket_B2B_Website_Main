@@ -16,7 +16,7 @@ const OrderDetails = () => {
     const fetchOutlets = async () => {
       try {
         const response = await fetch(
-          "https://eggbucket-frontend.onrender.com/egg-bucket-b2b/get-all-outlets"
+          "https://eggbucket-api.onrender.com/egg-bucket-b2b/get-all-outlets"
         );
         const data = await response.json();
         if (data.status === "success") {
@@ -35,7 +35,7 @@ const OrderDetails = () => {
     const fetchCustomers = async () => {
       try {
         const response = await fetch(
-          "https://eggbucket-frontend.onrender.com/customers/egg-bucket-b2b/getAllCustomer"
+          "https://eggbucket-api.onrender.com/customers/egg-bucket-b2b/getAllCustomer"
         );
         const data = await response.json();
         if (data) {
@@ -54,7 +54,7 @@ const OrderDetails = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          "https://eggbucket-frontend.onrender.com/orders/egg-bucket-b2b/getAllOrder"
+          "https://eggbucket-api.onrender.com/orders/egg-bucket-b2b/getAllOrder"
         );
         const data = await response.json();
         setOrders(data); // Store the data in the state
@@ -69,7 +69,7 @@ const OrderDetails = () => {
   // Fetch filtered orders based on selected filters
   useEffect(() => {
     const fetchFilteredOrders = async () => {
-      let url = "https://eggbucket-frontend.onrender.com/orders/egg-bucket-b2b/getAllOrder";
+      let url = "https://eggbucket-api.onrender.com/orders/egg-bucket-b2b/getAllOrder";
       const filters = [];
 
       // Add outlet filter if selected
@@ -146,7 +146,7 @@ const OrderDetails = () => {
             onChange={setOutletFilter}
             options={[
               "Outlet",
-              ...outlets.map((outlet) => `Outlet ${outlet.outletNumber}`),
+              ...outlets.map((outlet) => `Outlet ${outlet.outletArea}`),
             ]}
           />
           <FilterDropdown

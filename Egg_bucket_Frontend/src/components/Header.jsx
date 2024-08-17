@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, ChevronDown, Menu } from 'lucide-react';
-import img from "../assets/images/Capture.png"
+import img from "../assets/images/th.jpeg"
 import logo from "../assets/images/logo-egg.jpg"
 
 const Header = () => {

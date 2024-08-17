@@ -1,8 +1,8 @@
 const DeliveryDriver = require("../models/delivery_driver_model");
 const ApiFeatures=require('../utils/apifeatures')
-  
+const Outlet=require('../models/outlet_model')
 const removeImg =require('../utils/imageRemove')
-
+const mongoose=require('mongoose')
 
 
 // Create a new delivery driver   
@@ -46,7 +46,7 @@ exports.createDeliveryDriver = async (req, res) => {
 exports.getAllDeliveryDrivers = async (req, res) => {
   try {
     
-    const apiFeatures = new ApiFeatures(DeliveryDriver.find().select('+password'), req.query)
+    const apiFeatures = new ApiFeatures(DeliveryDriver.find().select('+password') , req.query)
       .filtering()    // Apply filtering
       .paginaton()
 
@@ -129,6 +129,15 @@ exports.updateDeliveryDriver = async (req, res) => {
 exports.deleteDeliveryDriver = async (req, res) => {
   try {
     const driverId = req.params.id;
+    const did2 = new mongoose.Types.ObjectId(driverId)
+    const outlet = await Outlet.findOne({ deliveryPartner: { $in: [did2] } });
+    if(outlet){
+      return res.status(400).json({
+        status:"fail",
+        error:`Driver is currently working for ${outlet.outletArea} Outlet`
+      })
+    }
+
     const driver = await DeliveryDriver.findByIdAndDelete(driverId);
 
     if (!driver) {

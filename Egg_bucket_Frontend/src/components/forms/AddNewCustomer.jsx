@@ -18,36 +18,42 @@ const AddNewCustomer = () => {
 
   useEffect(() => {
     // Fetch all outlets
-    fetch('https://eggbucket-frontend.onrender.com/egg-bucket-b2b/get-all-outlets')
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success' && data.data.length > 0) {
-          const latestOutletNumber = Math.max(...data.data.map(outlet => parseInt(outlet.outletNumber)));
-          setFormData(prevState => ({
-            ...prevState,
-            outlet: latestOutletNumber + 1
-          }));
-        }
-      })
-      .catch(error => console.error('Error fetching outlets:', error));
+    // fetch('https://eggbucket-api.onrender.com/egg-bucket-b2b/get-all-outlets')
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     if (data.status === 'success' && data.data.length > 0) {
+    //       const latestOutletNumber = Math.max(...data.data.map(outlet => (outlet.outletNumber).toString()));
+    //       setFormData(prevState => ({
+    //         ...prevState,
+    //         outlet: latestOutletNumber + 1
+    //       }));
+    //     }
+    //   })
+    //   .catch(error => console.error('Error fetching outlets:', error));
 
     // Fetch all customers
-    fetch('https://eggbucket-frontend.onrender.com/customers/egg-bucket-b2b/getAllCustomer')
+    fetch('https://eggbucket-api.onrender.com/customers/egg-bucket-b2b/getAllCustomer')
       .then(response => response.json())
       .then(data => {
         if (data.length > 0) {
-          const latestCustomerId = Math.max(...data.map(customer => parseInt(customer.customerId)));
+          const latestCustomerId = Math.max(...data.map(customer => parseInt(customer.customerId.split('_')[1])));
           setCustomerId(latestCustomerId + 1);
           setFormData(prevState => ({
             ...prevState,
-            customerId: latestCustomerId + 1
+            customerId: `EB_${latestCustomerId +1}`
+          }));
+        }
+        else{
+          setFormData(prevState => ({
+            ...prevState,
+            customerId: "EB_1"
           }));
         }
       })
       .catch(error => console.error('Error fetching customers:', error));
 
     // Fetch all outlets for dropdown
-    fetch('https://eggbucket-frontend.onrender.com/egg-bucket-b2b/get-all-outlets')
+    fetch('https://eggbucket-api.onrender.com/egg-bucket-b2b/get-all-outlets')
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
@@ -76,9 +82,9 @@ const AddNewCustomer = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validate required fields
     const requiredFields = ['customerName', 'businessName', 'locationUrl', 'phoneNumber', 'outlet'];
     for (let field of requiredFields) {
@@ -87,39 +93,44 @@ const AddNewCustomer = () => {
         return;
       }
     }
-
-    // Prepare form data for submission
-    const formDataToSend = new FormData();
-    formDataToSend.append('customerId', formData.customerId);
-    formDataToSend.append('customerName', formData.customerName);
-    formDataToSend.append('businessName', formData.businessName);
-    formDataToSend.append('location', formData.locationUrl);
-    formDataToSend.append('phoneNumber', formData.phoneNumber);
-    formDataToSend.append('outlet', formData.outlet);
-    if (formData.img) {
-      formDataToSend.append('img', formData.img);
-    }
-
-    // Submit form data
-    fetch('https://eggbucket-frontend.onrender.com/customers/egg-bucket-b2b/create-customer', {
-      method: 'POST',
-      body: formDataToSend
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data) {
-          alert('Customer added successfully');
-          window.location.reload()
-          // Reset form or redirect as needed
-        } else {
-          alert('Failed to add customer');
-        }
-      })
-      .catch(error => {
-        console.error('Error creating customer:', error);
-        alert('Error creating customer');
+  
+    try {
+      // Prepare form data for submission
+      const formDataToSend = new FormData();
+      formDataToSend.append('customerId', formData.customerId);
+      formDataToSend.append('customerName', formData.customerName);
+      formDataToSend.append('businessName', formData.businessName);
+      formDataToSend.append('location', formData.locationUrl);
+      formDataToSend.append('phoneNumber', formData.phoneNumber);
+      formDataToSend.append('outlet', formData.outlet);
+      if (formData.img) {
+        formDataToSend.append('img', formData.img);
+      }
+  
+      console.log([...formDataToSend]);
+  
+      // Submit form data
+      const response = await fetch('https://eggbucket-api.onrender.com/customers/egg-bucket-b2b/create-customer', {
+        method: 'POST',
+        body: formDataToSend,
       });
+  
+      // Check if the response was successful
+      if (response.ok) {
+        const data = await response.json();
+        alert('Customer added successfully');
+        console.log(data);
+        window.location.reload(); // You may want to navigate instead of reloading
+      } else {
+        // Handle error responses
+        alert(`Failed to add customer. Error code: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error creating customer:', error);
+      alert('Error creating customer');
+    }
   };
+  
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
@@ -224,12 +235,18 @@ const AddNewCustomer = () => {
               className="w-full p-2 border border-gray-300 rounded-md"
               required
             >
-              <option value="" disabled>Select Outlet</option>
+              {/* <option value="" disabled>Select Outlet</option>
               {outlets.map(outlet => (
                 <option key={outlet._id} value={outlet._id}>
                   {outlet.outletNumber}
                 </option>
-              ))}
+              ))} */}
+               <option value="" disabled>Select Outlet</option>  //outletNumber
+    {outlets.map(outlet => (
+      <option key={outlet._id} value={outlet._id}>
+        {outlet.outletArea}  
+      </option>
+    ))}
             </select>
           </div>
         </div>

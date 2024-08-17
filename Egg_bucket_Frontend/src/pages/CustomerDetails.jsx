@@ -13,7 +13,7 @@ const CustomerDetails = () => {
 
   const fetchCustomers = async (query) => {
     try {
-      const response = await fetch('https://eggbucket-frontend.onrender.com/customers/egg-bucket-b2b/getAllCustomer'+query);
+      const response = await fetch('https://eggbucket-api.onrender.com/customers/egg-bucket-b2b/getAllCustomer'+query);
       const data = await response.json();
       if (response.ok) {
         setCustomers(data);
@@ -32,7 +32,7 @@ const CustomerDetails = () => {
     // Fetch outlets for the dropdown
     const fetchOutlets = async () => {
       try {
-        const response = await fetch('https://eggbucket-frontend.onrender.com/egg-bucket-b2b/get-all-outlets');
+        const response = await fetch('https://eggbucket-api.onrender.com/egg-bucket-b2b/get-all-outlets');
         const data = await response.json();
         if (response.ok) {
           setOutlets(data.data); // Set the outlets to state
@@ -64,7 +64,7 @@ const CustomerDetails = () => {
 
   const handleSaveEdit = async (formData) => {
     try {
-      const response = await fetch(`https://eggbucket-frontend.onrender.com/customers/egg-bucket-b2b/customer/${editingCustomer._id}`, {
+      const response = await fetch(`https://eggbucket-api.onrender.com/customers/egg-bucket-b2b/customer/${editingCustomer._id}`, {
         method: 'PATCH',
         body: formData
       });
@@ -91,7 +91,7 @@ const CustomerDetails = () => {
 
        console.log(Id)
       try {
-        const response = await fetch(`https://eggbucket-frontend.onrender.com/customers/egg-bucket-b2b/customer/${Id}`, {
+        const response = await fetch(`https://eggbucket-api.onrender.com/customers/egg-bucket-b2b/customer/${Id}`, {
           method: 'DELETE'
         });
          
@@ -132,7 +132,7 @@ const CustomerDetails = () => {
                 <option value="Outlet">Outlet</option>
                 {outlets.map((outlet) => (
                   <option key={outlet._id} value={outlet._id}>
-                    {outlet.outletNumber}
+                    {outlet.outletArea}
                   </option>
                 ))}
               </select>
@@ -182,13 +182,14 @@ const CustomerDetails = () => {
               </tr>
             </thead>
             <tbody>
+           
               {customers.map(customer => (
                 <tr key={customer._id}>
                   <td className="text-left p-2 text-sm text-gray-600">{customer.customerId}</td>
                   <td className="text-left p-2 text-sm text-gray-600">{customer.outlet.outletNumber}</td>
                   <td className="text-left p-2 text-sm text-gray-600">{customer.customerName}</td>
                   <td className="text-left p-2 text-sm text-gray-600">{customer.location}</td>
-                  <td className="text-left p-2 text-sm text-gray-600">{customer.outlet.outletArea}</td>
+                  <td className="text-left p-2 text-sm text-gray-600"> {customer.outlet.outletArea}</td>
                   <td className="text-left p-2 text-sm text-gray-600">
                     <img src={customer.img} alt={customer.customerName} className="w-12 h-12 object-cover rounded-md" />
                   </td>

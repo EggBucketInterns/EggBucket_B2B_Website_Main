@@ -13,7 +13,7 @@ const OutletDetails = () => {
   useEffect(() => {
     const fetchOutlets = async () => {
       try {
-        const response = await fetch('https://eggbucket-frontend.onrender.com/egg-bucket-b2b/get-all-outlets');
+        const response = await fetch('https://eggbucket-api.onrender.com/egg-bucket-b2b/get-all-outlets');
         const result = await response.json();
 
         if (result.status === 'success') {
@@ -54,7 +54,7 @@ const OutletDetails = () => {
 
   const handleSaveEdit = async (formData) => {
     try {
-      const response = await fetch(`https://eggbucket-frontend.onrender.com/egg-bucket-b2b/update-outlet/${editingOutlet.id}`, {
+      const response = await fetch(`https://eggbucket-api.onrender.com/egg-bucket-b2b/update-outlet/${editingOutlet.id}`, {
         method: 'PATCH',
         // headers: {
         //   'Content-Type': 'application/json',
@@ -86,16 +86,16 @@ const OutletDetails = () => {
 
        console.log(id)
       try {
-        const response = await fetch(`https://eggbucket-frontend.onrender.com/egg-bucket-b2b/delete-outlet/${id}`, {
+        const response = await fetch(`https://eggbucket-api.onrender.com/egg-bucket-b2b/delete-outlet/${id}`, {
           method: 'DELETE'
         });
-         
+         const data=await response.json()
         if (response.ok) {
           window.location.reload();
           alert('Outlet deleted successfully');
 
         } else {
-          alert('Failed to delete outlet');
+          alert(data.error);
         }
      
       } catch (error) {

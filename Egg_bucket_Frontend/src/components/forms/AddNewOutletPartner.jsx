@@ -3,7 +3,7 @@ import { Camera } from 'lucide-react';
 
 const generatePassword = () => {
   // Function to generate a random unique password
-  return 'FB_' + Math.floor(1000000 + Math.random() * 9000000);
+  return 'OP_' + ((Math.floor(1000000 + Math.random() * 9000000))+1000)%1000;
 };
 
 const AddNewOutletPartner = () => {
@@ -69,7 +69,7 @@ const AddNewOutletPartner = () => {
       if (photo) form.append('img', photo);
 
       try {
-        const response = await fetch('https://eggbucket-frontend.onrender.com/outletPartners/egg-bucket-b2b/create-outlet_partner', {
+        const response = await fetch('https://eggbucket-api.onrender.com/outletPartners/egg-bucket-b2b/create-outlet_partner', {
           method: 'POST',
           body: form
         });

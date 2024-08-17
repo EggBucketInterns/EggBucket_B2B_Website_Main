@@ -26,7 +26,7 @@ const EditOutlet = ({ outlet, onClose, onSave }) => {
   useEffect(() => {
     const fetchOutletPartners = async () => {
       try {
-        const response = await fetch('https://eggbucket-frontend.onrender.com/outletPartners/egg-bucket-b2b/displayAll-outlet_partner');
+        const response = await fetch('https://eggbucket-api.onrender.com/outletPartners/egg-bucket-b2b/displayAll-outlet_partner');
         const result = await response.json();
 
         if (result.status === 'success') {
@@ -43,7 +43,7 @@ const EditOutlet = ({ outlet, onClose, onSave }) => {
     
     const fetchDeliveryPartners = async () => {
       try {
-        const response = await fetch('https://eggbucket-frontend.onrender.com/deliveryDrivers/egg-bucket-b2b/displayAll-delivery_partner');
+        const response = await fetch('https://eggbucket-api.onrender.com/deliveryDrivers/egg-bucket-b2b/displayAll-delivery_partner');
         const data = await response.json();
         if (Array.isArray(data)) {
           setDeliveryPartners(data);

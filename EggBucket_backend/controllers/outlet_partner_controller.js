@@ -41,7 +41,7 @@ exports.createOutletPartner = async (req, res) => {
 exports.getAllPartners = async (req, res) => {
   try {
     
-    const apiFeatures = new ApiFeatures(OutletPartner.find().select('+password'), req.query)
+    const apiFeatures = new ApiFeatures(OutletPartner.find().select('+password') , req.query)
       .filtering()    // Apply filtering
       .paginaton()    // Apply pagination
       
@@ -143,7 +143,7 @@ exports.deletePartner = async (req, res) => {
     if(outlet){
       return  res
       .status(500)
-      .json({ status:"fail", error: `OutletPartner is assigned to outlet:${outlet.outletNumber} `});
+      .json({ status:"fail", error: `OutletPartner is assigned to ${outlet.outletArea} Outlet`});
      }
     
     const result = await OutletPartner.findByIdAndDelete(pid);
