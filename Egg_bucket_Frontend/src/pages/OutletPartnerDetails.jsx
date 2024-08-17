@@ -120,15 +120,15 @@ const OutletPartnerDetails = () => {
       <h1 className="text-2xl font-bold mb-4">Outlet Partner Details</h1>
       
       <div className="bg-white rounded-lg shadow-sm p-4 flex-grow flex flex-col">
-        <div className="flex items-center justify-between mb-4 gap-2">
-          <div className="flex items-center gap-2 flex-grow">
-            <button className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm">
+        <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
+          <div className="flex items-center gap-2">
+            <button className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm h-12">
               <Filter className="w-4 h-4 mr-2" />
               Filter By
             </button>
             <div className="relative">
               <select 
-                className="appearance-none bg-white border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm"
+                className="appearance-none bg-white border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm h-12"
                 value={outlet}
                 onChange={handleOutletChange}
               >
@@ -141,26 +141,26 @@ const OutletPartnerDetails = () => {
               </select>
               <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             </div>
-            <div className="relative flex-grow">
+            <div className="relative">
               <input
                 type="text"
                 placeholder="Search by Name"
-                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm"
+                className="pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm h-12"
                 value={searchTerm}
-                onChange={(e) => { setSearchTerm(e.target.value); setOutlet('Outlet'); fetchOutletPartners(`?firstName=${e.target.value}`); }}
+                onChange={(e) => { setSearchTerm(e.target.value); setOutlet(''); fetchOutletPartners(`?firstName=${e.target.value}`); }}
               />
               <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-blue-600" onClick={() => { setOutlet(''); fetchOutletPartners(); }}>
+            <button className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-blue-600 h-12" onClick={() => { setOutlet(''); fetchOutletPartners(); }}>
               <RotateCcw className="w-4 h-4 mr-1" />
               Reset Filter
             </button>
-            <button onClick={() => navigate('/contact/newoutletpartner')} className="px-3 py-2 bg-blue-600 text-white rounded-md text-sm">
+            <button onClick={() => navigate('/contact/newoutletpartner')} className="px-3 py-2 bg-blue-600 text-white rounded-md text-sm h-12">
               REGISTER NEW OUTLET PARTNER
             </button>
-            <button className="px-3 py-2 bg-emerald-500 text-white rounded-md text-sm">
+            <button className="px-3 py-2 bg-emerald-500 text-white rounded-md text-sm h-12">
               SPREADSHEET
             </button>
           </div>
@@ -190,10 +190,10 @@ const OutletPartnerDetails = () => {
                   <td className="text-left p-2 text-sm text-gray-600">{partner.password || 'N/A'}</td>
                   <td className="text-left p-2 text-sm text-gray-600">
                     <button className='text-purple-600' onClick={() => handleEditClick(partner)}>
-                      <Edit className='w-5 h-5'/>
+                      <Edit className="w-4 h-4 inline-block" /> Edit
                     </button>
-                    <button className='text-red-600' onClick={() => handleDeleteClick(partner._id)}>
-                      <Trash className='w-5 h-5'/>
+                    <button className='text-red-600 ml-2' onClick={() => handleDeleteClick(partner._id)}>
+                      <Trash className="w-4 h-4 inline-block" /> Delete
                     </button>
                   </td>
                 </tr>
@@ -203,10 +203,10 @@ const OutletPartnerDetails = () => {
         </div>
       </div>
       {editingOutletPartner && (
-        <EditOutletPartner 
-          outletpartner={editingOutletPartner}
-          onClose={handleCloseEdit}
+        <EditOutletPartner
+          outletPartner={editingOutletPartner}
           onSave={handleSaveEdit}
+          onClose={handleCloseEdit}
         />
       )}
     </div>
