@@ -18,7 +18,7 @@ const AddNewCustomer = () => {
 
   useEffect(() => {
     // Fetch all outlets
-    // fetch('http://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets')
+    // fetch('https://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets')
     //   .then(response => response.json())
     //   .then(data => {
     //     if (data.status === 'success' && data.data.length > 0) {
@@ -32,7 +32,7 @@ const AddNewCustomer = () => {
     //   .catch(error => console.error('Error fetching outlets:', error));
 
     // Fetch all customers
-    fetch('http://eggbucket-website.onrender.com/customers/egg-bucket-b2b/getAllCustomer')
+    fetch('https://eggbucket-website.onrender.com/customers/egg-bucket-b2b/getAllCustomer')
       .then(response => response.json())
       .then(data => {
         if (data.length > 0) {
@@ -53,7 +53,7 @@ const AddNewCustomer = () => {
       .catch(error => console.error('Error fetching customers:', error));
 
     // Fetch all outlets for dropdown
-    fetch('http://eggbucket-website.onrender.com.1:3577/egg-bucket-b2b/get-all-outlets')
+    fetch('https://eggbucket-website.onrender.com.1:3577/egg-bucket-b2b/get-all-outlets')
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
@@ -110,7 +110,7 @@ const AddNewCustomer = () => {
       console.log([...formDataToSend]);
   
       // Submit form data
-      const response = await fetch('http://eggbucket-website.onrender.com/customers/egg-bucket-b2b/create-customer', {
+      const response = await fetch('https://eggbucket-website.onrender.com/customers/egg-bucket-b2b/create-customer', {
         method: 'POST',
         body: formDataToSend,
       });

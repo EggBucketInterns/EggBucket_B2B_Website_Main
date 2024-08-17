@@ -13,7 +13,7 @@ const CustomerDetails = () => {
 
   const fetchCustomers = async (query) => {
     try {
-      const response = await fetch('http://eggbucket-website.onrender.com/customers/egg-bucket-b2b/getAllCustomer'+query);
+      const response = await fetch('https://eggbucket-website.onrender.com/customers/egg-bucket-b2b/getAllCustomer'+query);
       const data = await response.json();
       if (response.ok) {
         setCustomers(data);
@@ -64,7 +64,7 @@ const CustomerDetails = () => {
 
   const handleSaveEdit = async (formData) => {
     try {
-      const response = await fetch(`http://eggbucket-website.onrender.com/customers/egg-bucket-b2b/customer/${editingCustomer._id}`, {
+      const response = await fetch(`https://eggbucket-website.onrender.com/customers/egg-bucket-b2b/customer/${editingCustomer._id}`, {
         method: 'PATCH',
         body: formData
       });
@@ -91,7 +91,7 @@ const CustomerDetails = () => {
 
        console.log(Id)
       try {
-        const response = await fetch(`http://eggbucket-website.onrender.com/customers/egg-bucket-b2b/customer/${Id}`, {
+        const response = await fetch(`https://eggbucket-website.onrender.com/customers/egg-bucket-b2b/customer/${Id}`, {
           method: 'DELETE'
         });
          

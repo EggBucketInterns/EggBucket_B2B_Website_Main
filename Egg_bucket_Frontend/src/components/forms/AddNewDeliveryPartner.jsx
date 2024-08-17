@@ -67,7 +67,7 @@ const AddNewDeliveryPartner = () => {
     formDataToSubmit.append('img', formData.img);
 
     try {
-      const response = await fetch('http://eggbucket-website.onrender.com/deliveryDrivers/egg-bucket-b2b/create-delivery_partner', {
+      const response = await fetch('https://eggbucket-website.onrender.com/deliveryDrivers/egg-bucket-b2b/create-delivery_partner', {
         method: 'POST',
         body: formDataToSubmit,
       });
