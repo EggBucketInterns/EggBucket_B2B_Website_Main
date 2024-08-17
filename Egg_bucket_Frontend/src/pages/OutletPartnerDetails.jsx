@@ -49,7 +49,7 @@ const OutletPartnerDetails = () => {
   const handleOutletChange = (e) => {
     const selectedOutlet = e.target.value;
     setOutlet(selectedOutlet);
-    setSearchTerm('');
+    setSearchTerm('')
     // Fetch outlet partners by selected outlet number
     if (selectedOutlet) {
       fetchOutletPartners(`?outletId=${selectedOutlet}`);
@@ -68,7 +68,7 @@ const OutletPartnerDetails = () => {
     try {
       const response = await fetch(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${editingOutletPartner._id}`, {
         method: 'PATCH',
-        body: formData
+        body: formData,
       });
       const data = await response.json();
       if (response.ok) {
@@ -90,9 +90,8 @@ const OutletPartnerDetails = () => {
     if (confirmDelete) {
       try {
         const response = await fetch(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${partnerId}`, {
-          method: 'DELETE'
+          method: 'DELETE',
         });
-
         const data = await response.json();
         if (response.ok) {
           setOutletPartners(outletPartners.filter(op => op._id !== partnerId));
@@ -112,15 +111,15 @@ const OutletPartnerDetails = () => {
       <h1 className="text-2xl font-bold mb-4">Outlet Partner Details</h1>
       
       <div className="bg-white rounded-lg shadow-sm p-4 flex-grow flex flex-col">
-        <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
-          <div className="flex items-center gap-2">
-            <button className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm h-12">
-              <Filter className="w-4 h-4 mr-2" />
+        <div className="flex flex-wrap items-center justify-between mb-4 gap-1">
+          <div className="flex flex-wrap items-center gap-1">
+            <button className="flex items-center px-2 py-1 border border-gray-300 rounded-md text-xs">
+              <Filter className="w-4 h-4 mr-1" />
               Filter By
             </button>
             <div className="relative">
               <select 
-                className="appearance-none bg-white border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm h-12"
+                className="appearance-none bg-white border border-gray-300 rounded-md py-1 pl-2 pr-6 text-xs"
                 value={outlet}
                 onChange={handleOutletChange}
               >
@@ -137,22 +136,22 @@ const OutletPartnerDetails = () => {
               <input
                 type="text"
                 placeholder="Search by Name"
-                className="pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm h-12"
+                className="pl-7 pr-2 py-1 border border-gray-300 rounded-md text-xs"
                 value={searchTerm}
-                onChange={(e) => { setSearchTerm(e.target.value); setOutlet(''); fetchOutletPartners(`?firstName=${e.target.value}`); }}
+                onChange={(e) => { setSearchTerm(e.target.value); setOutlet('Outlet'); fetchOutletPartners(`?firstName=${e.target.value}`); }}
               />
               <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-blue-600 h-12" onClick={() => { setOutlet(''); fetchOutletPartners(); }}>
+          <div className="flex flex-wrap gap-1">
+            <button className="flex items-center px-2 py-1 border border-gray-300 rounded-md text-xs text-blue-600" onClick={() => { setOutlet(''); fetchOutletPartners(); }}>
               <RotateCcw className="w-4 h-4 mr-1" />
               Reset Filter
             </button>
-            <button onClick={() => navigate('/contact/newoutletpartner')} className="px-3 py-2 bg-blue-600 text-white rounded-md text-sm h-12">
+            <button onClick={() => navigate('/contact/newoutletpartner')} className="px-2 py-1 bg-blue-600 text-white rounded-md text-xs">
               REGISTER NEW OUTLET PARTNER
             </button>
-            <button className="px-3 py-2 bg-emerald-500 text-white rounded-md text-sm h-12">
+            <button className="px-2 py-1 bg-emerald-500 text-white rounded-md text-xs">
               SPREADSHEET
             </button>
           </div>
@@ -182,10 +181,10 @@ const OutletPartnerDetails = () => {
                   <td className="text-left p-2 text-sm text-gray-600">{partner.password || 'N/A'}</td>
                   <td className="text-left p-2 text-sm text-gray-600">
                     <button className='text-purple-600' onClick={() => handleEditClick(partner)}>
-                      <Edit className="w-4 h-4 inline-block" /> Edit
+                      <Edit className='w-5 h-5'/>
                     </button>
-                    <button className='text-red-600 ml-2' onClick={() => handleDeleteClick(partner._id)}>
-                      <Trash className="w-4 h-4 inline-block" /> Delete
+                    <button className='text-red-600' onClick={() => handleDeleteClick(partner._id)}>
+                      <Trash className='w-5 h-5'/>
                     </button>
                   </td>
                 </tr>
@@ -195,10 +194,10 @@ const OutletPartnerDetails = () => {
         </div>
       </div>
       {editingOutletPartner && (
-        <EditOutletPartner
-          outletPartner={editingOutletPartner}
-          onSave={handleSaveEdit}
+        <EditOutletPartner 
+          outletpartner={editingOutletPartner}
           onClose={handleCloseEdit}
+          onSave={handleSaveEdit}
         />
       )}
     </div>
