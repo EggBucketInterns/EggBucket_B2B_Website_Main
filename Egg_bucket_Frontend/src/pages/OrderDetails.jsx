@@ -16,7 +16,7 @@ const OrderDetails = () => {
     const fetchOutlets = async () => {
       try {
         const response = await fetch(
-          "https://eggbucket-api.onrender.com/egg-bucket-b2b/get-all-outlets"
+          "http://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets"
         );
         const data = await response.json();
         if (data.status === "success") {
@@ -31,11 +31,24 @@ const OrderDetails = () => {
   }, []);
 
   // Fetch the list of customers
+
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch(
+        "http://eggbucket-website.onrender.com/orders/egg-bucket-b2b/getAllOrder"
+      );
+      const data = await response.json();
+      setOrders(data); // Store the data in the state
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
         const response = await fetch(
-          "https://eggbucket-api.onrender.com/customers/egg-bucket-b2b/getAllCustomer"
+          "http://eggbucket-website.onrender.com/customers/egg-bucket-b2b/getAllCustomer"
         );
         const data = await response.json();
         if (data) {
@@ -51,31 +64,19 @@ const OrderDetails = () => {
 
   // Fetch the list of orders
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await fetch(
-          "https://eggbucket-api.onrender.com/orders/egg-bucket-b2b/getAllOrder"
-        );
-        const data = await response.json();
-        setOrders(data); // Store the data in the state
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      }
-    };
-
     fetchOrders();
   }, []);
 
   // Fetch filtered orders based on selected filters
   useEffect(() => {
     const fetchFilteredOrders = async () => {
-      let url = "https://eggbucket-api.onrender.com/orders/egg-bucket-b2b/getAllOrder";
+      let url = "http://eggbucket-website.onrender.com/orders/egg-bucket-b2b/getAllOrder";
       const filters = [];
 
       // Add outlet filter if selected
       if (outletFilter !== "Outlet") {
         const selectedOutlet = outlets.find(
-          (outlet) => `Outlet ${outlet.outletNumber}` === outletFilter
+          (outlet) => `${outlet.outletArea}` === outletFilter
         );
         if (selectedOutlet) {
           filters.push(`outletId=${selectedOutlet._id}`);
@@ -114,6 +115,9 @@ const OrderDetails = () => {
     fetchFilteredOrders();
   }, [outletFilter, customerFilter, statusFilter, outlets, customers]);
 
+
+  
+
   return (
     <div className="h-full flex flex-col bg-gray-50 p-6">
       <div className="flex justify-between items-center mb-6">
@@ -146,7 +150,7 @@ const OrderDetails = () => {
             onChange={setOutletFilter}
             options={[
               "Outlet",
-              ...outlets.map((outlet) => `Outlet ${outlet.outletArea}`),
+              ...outlets.map((outlet) => `${outlet.outletArea}`),
             ]}
           />
           <FilterDropdown
@@ -187,7 +191,7 @@ const OrderDetails = () => {
             <thead>
               <tr className="bg-gray-50">
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  OUTLET ID
+                  OUTLET 
                 </th>
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">
                   CUSTOMER ID
@@ -210,7 +214,7 @@ const OrderDetails = () => {
               {orders.map((order) => (
                 <tr key={order._id} className="border-b border-gray-200">
                   <td className="p-3 text-sm">
-                    {order.outletId ? order.outletId.outletNumber : "N/A"}
+                    {order.outletId ? order.outletId.outletArea+" ID:"+order.outletId.outletNumber: "N/A"}
                   </td>
                   <td className="p-3 text-sm">
                     {order.customerId ? order.customerId.customerName : "N/A"}

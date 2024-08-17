@@ -74,7 +74,7 @@ exports.getAllOrders = async (req, res) => {
 
     // Apply population after other query methods
     const orders = await apiFeatures.query
-      .populate({ path: "outletId", select: "_id outletNumber phoneNumber" })
+      .populate({ path: "outletId", select: "_id outletNumber phoneNumber outletArea" })
       .populate({ path: "customerId", select: "_id customerId customerName phoneNumber" })
       .populate({ path: "vendorId", select: "_id vendorName phoneNumber" })
       .populate({ path: "deliveryId", select: "_id firstName phoneNumber" });

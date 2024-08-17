@@ -1,2 +1,3 @@
 # EggBucket_Website
-EggBucket website 
+*install node modules
+*.env  
