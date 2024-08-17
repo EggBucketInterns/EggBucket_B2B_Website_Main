@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Filter, ChevronDown, Search, RotateCcw, Edit,Trash } from 'lucide-react';
+import { Filter, ChevronDown, Search, RotateCcw, Edit, Trash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import EditOutletPartner from '../components/forms/EditOutletPartner';
 
@@ -66,7 +66,7 @@ const OutletPartnerDetails = () => {
 
   const handleSaveEdit = async (formData) => {
     try {
-      const navigate=useNavigate()
+      const navigate = useNavigate();
 
       const response = await fetch(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${editingOutletPartner._id}`, {
         method: 'PATCH',
@@ -81,7 +81,7 @@ const OutletPartnerDetails = () => {
       } else {
         alert('Failed to update outlet partner');
       }
-    
+
     } catch (error) {
       console.error('Error updating outlet partner:', error);
       alert('Error updating outlet partner');
@@ -93,13 +93,13 @@ const OutletPartnerDetails = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this outlet partner?');
     if (confirmDelete) {
 
-       console.log(partnerId)
+      console.log(partnerId);
       try {
         const response = await fetch(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${partnerId}`, {
           method: 'DELETE'
         });
-         
-        const data=await response.json()
+
+        const data = await response.json();
         if (response.ok) {
           setOutletPartners(outletPartners.filter(op => op._id !== partnerId));
           alert('Outlet partner deleted successfully');
@@ -107,24 +107,21 @@ const OutletPartnerDetails = () => {
         } else {
           alert(data.error);
         }
-     
+
       } catch (error) {
         console.error('Error deleting outlet partner :', error);
         alert('Error deleting outlet partner');
-       
-        
       }
     }
   };
-
 
   return (
     <div className="h-full pt-7 flex flex-col">
       <h1 className="text-2xl font-bold mb-4">Outlet Partner Details</h1>
       
       <div className="bg-white rounded-lg shadow-sm p-4 flex-grow flex flex-col">
-        <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center justify-between mb-4 gap-2">
+          <div className="flex items-center gap-2 flex-grow">
             <button className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm">
               <Filter className="w-4 h-4 mr-2" />
               Filter By
@@ -144,18 +141,18 @@ const OutletPartnerDetails = () => {
               </select>
               <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             </div>
-            <div className="relative">
+            <div className="relative flex-grow">
               <input
                 type="text"
                 placeholder="Search by Name"
-                className="pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm"
+                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm"
                 value={searchTerm}
-                onChange={(e) => { setSearchTerm(e.target.value); setOutlet('Outlet');fetchOutletPartners(`?firstName=${e.target.value}`); }}
+                onChange={(e) => { setSearchTerm(e.target.value); setOutlet('Outlet'); fetchOutletPartners(`?firstName=${e.target.value}`); }}
               />
               <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex items-center gap-2">
             <button className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-blue-600" onClick={() => { setOutlet(''); fetchOutletPartners(); }}>
               <RotateCcw className="w-4 h-4 mr-1" />
               Reset Filter
@@ -195,7 +192,7 @@ const OutletPartnerDetails = () => {
                     <button className='text-purple-600' onClick={() => handleEditClick(partner)}>
                       <Edit className='w-5 h-5'/>
                     </button>
-                    <button className='text-red-600' onClick={()=>handleDeleteClick(partner._id)}>
+                    <button className='text-red-600' onClick={() => handleDeleteClick(partner._id)}>
                       <Trash className='w-5 h-5'/>
                     </button>
                   </td>
