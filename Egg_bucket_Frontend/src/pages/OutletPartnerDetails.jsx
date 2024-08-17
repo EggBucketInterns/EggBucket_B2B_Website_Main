@@ -49,7 +49,7 @@ const OutletPartnerDetails = () => {
   const handleOutletChange = (e) => {
     const selectedOutlet = e.target.value;
     setOutlet(selectedOutlet);
-    setSearchTerm('')
+    setSearchTerm('');
     // Fetch outlet partners by selected outlet number
     if (selectedOutlet) {
       fetchOutletPartners(`?outletId=${selectedOutlet}`);
@@ -66,8 +66,6 @@ const OutletPartnerDetails = () => {
 
   const handleSaveEdit = async (formData) => {
     try {
-      const navigate = useNavigate();
-
       const response = await fetch(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${editingOutletPartner._id}`, {
         method: 'PATCH',
         body: formData
@@ -81,19 +79,15 @@ const OutletPartnerDetails = () => {
       } else {
         alert('Failed to update outlet partner');
       }
-
     } catch (error) {
       console.error('Error updating outlet partner:', error);
       alert('Error updating outlet partner');
     }
   };
 
-
   const handleDeleteClick = async (partnerId) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this outlet partner?');
     if (confirmDelete) {
-
-      console.log(partnerId);
       try {
         const response = await fetch(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${partnerId}`, {
           method: 'DELETE'
@@ -103,13 +97,11 @@ const OutletPartnerDetails = () => {
         if (response.ok) {
           setOutletPartners(outletPartners.filter(op => op._id !== partnerId));
           alert('Outlet partner deleted successfully');
-
         } else {
           alert(data.error);
         }
-
       } catch (error) {
-        console.error('Error deleting outlet partner :', error);
+        console.error('Error deleting outlet partner:', error);
         alert('Error deleting outlet partner');
       }
     }
