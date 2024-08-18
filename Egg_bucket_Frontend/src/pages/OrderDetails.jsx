@@ -223,7 +223,7 @@ const OrderDetails = () => {
                   <td className="p-3 text-sm">
                     {order.deliveryId ? order.deliveryId.firstName : "N/A"}
                   </td>
-                  <td className="p-3 text-sm">${order.amount}</td>
+                  <td className="p-3 text-sm">₹{order.amount}</td>
                   <td className="p-3">{order.status}
                   </td>
                 </tr>
