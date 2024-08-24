@@ -33,7 +33,7 @@ const OutletDashboard = () => {
     const fetchOutlets = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:3577/egg-bucket-b2b/get-all-outlets"
+          "https://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets"
         );
         setOutlets(response.data.data); // Adjust based on response structure
       } catch (error) {
@@ -48,7 +48,7 @@ const OutletDashboard = () => {
     const fetchCustomers = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:3577/customers/egg-bucket-b2b/getAllCustomer"
+          "https://eggbucket-website.onrender.com/customers/egg-bucket-b2b/getAllCustomer"
         );
         setCustomers(response.data); // Adjust based on response structure
       } catch (error) {
@@ -61,7 +61,8 @@ const OutletDashboard = () => {
   // Fetch summary data with filters
   useEffect(() => {
     const fetchSummary = async () => {
-      let url = "http://127.0.0.1:3577/admin/egg-bucket-b2b/dashboard";
+      let url =
+        "https://eggbucket-website.onrender.com/admin/egg-bucket-b2b/dashboard";
       const filters = [];
 
       // Apply outlet filter
