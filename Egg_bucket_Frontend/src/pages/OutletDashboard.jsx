@@ -1,7 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { FunnelIcon, ChevronDownIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
-import { CurrencyDollarIcon, CubeIcon, CheckCircleIcon, ClockIcon } from '@heroicons/react/24/solid';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  FunnelIcon,
+  ChevronDownIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline";
+import {
+  CurrencyDollarIcon,
+  CubeIcon,
+  CheckCircleIcon,
+  ClockIcon,
+} from "@heroicons/react/24/solid";
 
 const OutletDashboard = () => {
   const [summary, setSummary] = useState({
@@ -23,10 +32,12 @@ const OutletDashboard = () => {
   useEffect(() => {
     const fetchOutlets = async () => {
       try {
-        const response = await axios.get('https://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets');
+        const response = await axios.get(
+          "http://127.0.0.1:3577/egg-bucket-b2b/get-all-outlets"
+        );
         setOutlets(response.data.data); // Adjust based on response structure
       } catch (error) {
-        console.error('Error fetching outlets:', error);
+        console.error("Error fetching outlets:", error);
       }
     };
     fetchOutlets();
@@ -36,10 +47,12 @@ const OutletDashboard = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get('https://eggbucket-website.onrender.com/customers/egg-bucket-b2b/getAllCustomer');
+        const response = await axios.get(
+          "http://127.0.0.1:3577/customers/egg-bucket-b2b/getAllCustomer"
+        );
         setCustomers(response.data); // Adjust based on response structure
       } catch (error) {
-        console.error('Error fetching customers:', error);
+        console.error("Error fetching customers:", error);
       }
     };
     fetchCustomers();
@@ -48,20 +61,24 @@ const OutletDashboard = () => {
   // Fetch summary data with filters
   useEffect(() => {
     const fetchSummary = async () => {
-      let url = 'https://eggbucket-website.onrender.com/admin/egg-bucket-b2b/dashboard';
+      let url = "http://127.0.0.1:3577/admin/egg-bucket-b2b/dashboard";
       const filters = [];
 
       // Apply outlet filter
-      if (outletFilter !== 'Outlet') {
-        const selectedOutlet = outlets.find(outlet => `Outlet ${outlet.outletNumber}` === outletFilter);
+      if (outletFilter !== "Outlet") {
+        const selectedOutlet = outlets.find(
+          (outlet) => `Outlet ${outlet.outletArea}` === outletFilter
+        );
         if (selectedOutlet) {
           filters.push(`outletId=${selectedOutlet._id}`);
         }
       }
 
       // Apply customer filter
-      if (customerFilter !== 'Customer') {
-        const selectedCustomer = customers.find(customer => `Customer ${customer.customerId}` === customerFilter);
+      if (customerFilter !== "Customer") {
+        const selectedCustomer = customers.find(
+          (customer) => `Customer ${customer.customerId}` === customerFilter
+        );
         if (selectedCustomer) {
           filters.push(`customerId=${selectedCustomer._id}`);
         }
@@ -69,14 +86,14 @@ const OutletDashboard = () => {
 
       // Add filters to URL
       if (filters.length) {
-        url += `?${filters.join('&')}`;
+        url += `?${filters.join("&")}`;
       }
 
       try {
         const response = await axios.get(url);
         setSummary(response.data);
       } catch (error) {
-        console.error('Error fetching summary:', error);
+        console.error("Error fetching summary:", error);
       }
     };
 
@@ -86,7 +103,7 @@ const OutletDashboard = () => {
   return (
     <div className="p-6 bg-gray-100">
       <h1 className="text-2xl font-bold mb-6">Outlet Dashboard</h1>
-      
+
       {/* Filter Section */}
       <div className="flex items-center space-x-4 mb-8">
         <div className="flex items-center bg-white rounded-md shadow">
@@ -95,17 +112,23 @@ const OutletDashboard = () => {
         </div>
 
         {/* Outlet Filter Dropdown */}
-        <FilterDropdown 
-          value={outletFilter} 
+        <FilterDropdown
+          value={outletFilter}
           onChange={setOutletFilter}
-          options={["Outlet", ...outlets.map(outlet => `Outlet ${outlet.outletArea}`)]}
+          options={[
+            "Outlet",
+            ...outlets.map((outlet) => `Outlet ${outlet.outletArea}`),
+          ]}
         />
 
         {/* Customer Filter Dropdown */}
-        <FilterDropdown 
-          value={customerFilter} 
+        <FilterDropdown
+          value={customerFilter}
           onChange={setCustomerFilter}
-          options={["Customer", ...customers.map(customer => `Customer ${customer.customerId}`)]}
+          options={[
+            "Customer",
+            ...customers.map((customer) => `Customer ${customer.customerId}`),
+          ]}
         />
 
         <button
@@ -119,28 +142,28 @@ const OutletDashboard = () => {
           Reset Filter
         </button>
       </div>
-      
+
       {/* Stats Section */}
       <div className="grid grid-cols-4 gap-6">
-        <StatCard 
+        <StatCard
           title="Total Amount Collected"
           value={summary.totalAmtCollected}
           icon={<CurrencyDollarIcon className="h-6 w-6 text-green-500" />}
           color="bg-green-100"
         />
-        <StatCard 
+        <StatCard
           title="Total Orders"
           value={summary.totalOrders}
           icon={<CubeIcon className="h-6 w-6 text-yellow-500" />}
           color="bg-yellow-100"
         />
-        <StatCard 
+        <StatCard
           title="Orders Completed"
           value={summary.ordersCompleted}
           icon={<CheckCircleIcon className="h-6 w-6 text-green-500" />}
           color="bg-green-100"
         />
-        <StatCard 
+        <StatCard
           title="Orders Pending"
           value={summary.ordersPending}
           icon={<ClockIcon className="h-6 w-6 text-red-500" />}
@@ -158,7 +181,7 @@ const FilterDropdown = ({ value, onChange, options }) => (
       value={value}
       onChange={(e) => onChange(e.target.value)}
     >
-      {options.map(option => (
+      {options.map((option) => (
         <option key={option} value={option}>
           {option}
         </option>
@@ -175,9 +198,7 @@ const StatCard = ({ title, value, icon, color }) => (
         <p className="text-sm text-gray-500 mb-1">{title}</p>
         <p className="text-2xl font-bold">{value}</p>
       </div>
-      <div className={`p-2 rounded-full ${color}`}>
-        {icon}
-      </div>
+      <div className={`p-2 rounded-full ${color}`}>{icon}</div>
     </div>
   </div>
 );
