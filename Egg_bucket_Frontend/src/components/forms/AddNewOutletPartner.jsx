@@ -147,7 +147,7 @@ const AddNewOutletPartner = () => {
         
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Aadhar Number (Optional)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Aadhar Number</label>
             <input
               type="tel"
               name="aadharNumber"
