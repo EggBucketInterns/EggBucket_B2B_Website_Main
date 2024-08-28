@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Search, Filter, ChevronDown, RotateCcw, Edit } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { Search, Filter, ChevronDown, RotateCcw } from "lucide-react";
 
 const OrderDetails = () => {
+  const location = useLocation();
+  const initialStatusFilter = location.state?.statusFilter || "Status";
+
   const [searchTerm, setSearchTerm] = useState("");
   const [dateFilter, setDateFilter] = useState("Date");
   const [outletFilter, setOutletFilter] = useState("Outlet");
   const [customerFilter, setCustomerFilter] = useState("Customer");
-  const [statusFilter, setStatusFilter] = useState("Status");
+  const [statusFilter, setStatusFilter] = useState(initialStatusFilter);
   const [orders, setOrders] = useState([]);
   const [outlets, setOutlets] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -20,7 +24,7 @@ const OrderDetails = () => {
         );
         const data = await response.json();
         if (data.status === "success") {
-          setOutlets(data.data); // Store the data in the state
+          setOutlets(data.data);
         }
       } catch (error) {
         console.error("Error fetching outlets:", error);
@@ -31,19 +35,6 @@ const OrderDetails = () => {
   }, []);
 
   // Fetch the list of customers
-
-  const fetchOrders = async () => {
-    try {
-      const response = await fetch(
-        "https://eggbucket-website.onrender.com/orders/egg-bucket-b2b/getAllOrder"
-      );
-      const data = await response.json();
-      setOrders(data); // Store the data in the state
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  };
-
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
@@ -52,7 +43,7 @@ const OrderDetails = () => {
         );
         const data = await response.json();
         if (data) {
-          setCustomers(data); // Store the data in the state
+          setCustomers(data);
         }
       } catch (error) {
         console.error("Error fetching customers:", error);
@@ -62,18 +53,12 @@ const OrderDetails = () => {
     fetchCustomers();
   }, []);
 
-  // Fetch the list of orders
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
   // Fetch filtered orders based on selected filters
   useEffect(() => {
     const fetchFilteredOrders = async () => {
       let url = "https://eggbucket-website.onrender.com/orders/egg-bucket-b2b/getAllOrder";
       const filters = [];
 
-      // Add outlet filter if selected
       if (outletFilter !== "Outlet") {
         const selectedOutlet = outlets.find(
           (outlet) => `${outlet.outletArea}` === outletFilter
@@ -83,7 +68,6 @@ const OrderDetails = () => {
         }
       }
 
-      // Add customer filter if selected
       if (customerFilter !== "Customer") {
         const selectedCustomer = customers.find(
           (customer) => `Customer ${customer.customerId}` === customerFilter
@@ -93,12 +77,10 @@ const OrderDetails = () => {
         }
       }
 
-      // Add status filter if selected
-      if (statusFilter !== "Status") {
+      if (statusFilter !== "Status" && statusFilter !== "All") {
         filters.push(`status=${statusFilter.toLowerCase()}`);
       }
 
-      // Append filters to URL if any
       if (filters.length) {
         url += `?${filters.join("&")}`;
       }
@@ -106,7 +88,7 @@ const OrderDetails = () => {
       try {
         const response = await fetch(url);
         const data = await response.json();
-        setOrders(data); // Store the filtered data in the state
+        setOrders(data);
       } catch (error) {
         console.error("Error fetching filtered orders:", error);
       }
@@ -115,8 +97,12 @@ const OrderDetails = () => {
     fetchFilteredOrders();
   }, [outletFilter, customerFilter, statusFilter, outlets, customers]);
 
-
-  
+  const resetFilters = () => {
+    setDateFilter("Date");
+    setOutletFilter("Outlet");
+    setCustomerFilter("Customer");
+    setStatusFilter("Status");
+  };
 
   return (
     <div className="h-full flex flex-col bg-gray-50 p-6">
@@ -140,11 +126,6 @@ const OrderDetails = () => {
             <Filter className="w-4 h-4 mr-2" />
             Filter By
           </button>
-          {/* <FilterDropdown
-            value={dateFilter}
-            onChange={setDateFilter}
-            options={["Date", "This Week", "This Month", "This Year"]}
-          /> */}
           <FilterDropdown
             value={outletFilter}
             onChange={setOutletFilter}
@@ -174,12 +155,7 @@ const OrderDetails = () => {
           />
           <button
             className="flex items-center px-4 py-2 text-blue-600 font-medium text-sm"
-            onClick={() => {
-              setDateFilter("Date");
-              setOutletFilter("Outlet");
-              setCustomerFilter("Customer");
-              setStatusFilter("Status"); // Add this line to reset the status filter
-            }}
+            onClick={resetFilters}
           >
             <RotateCcw className="w-4 h-4 mr-2" />
             Reset Filter
@@ -224,8 +200,7 @@ const OrderDetails = () => {
                     {order.deliveryId ? order.deliveryId.firstName : "N/A"}
                   </td>
                   <td className="p-3 text-sm">₹{order.amount}</td>
-                  <td className="p-3">{order.status}
-                  </td>
+                  <td className="p-3">{order.status}</td>
                 </tr>
               ))}
             </tbody>
