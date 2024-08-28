@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios";
 import {
   FunnelIcon,
@@ -27,6 +28,8 @@ const OutletDashboard = () => {
   const [customers, setCustomers] = useState([]);
   const [outletFilter, setOutletFilter] = useState("Outlet");
   const [customerFilter, setCustomerFilter] = useState("Customer");
+
+  const navigate = useNavigate(); // Initialize navigate
 
   // Fetch the list of outlets
   useEffect(() => {
@@ -101,6 +104,18 @@ const OutletDashboard = () => {
     fetchSummary();
   }, [outletFilter, customerFilter, outlets, customers]);
 
+  // Handle navigation on card click
+  const handleCardClick = (statusFilter) => {
+    let filters = { statusFilter };
+    
+    // Add outlet filter to navigation state if selected
+    if (outletFilter !== "Outlet") {
+      filters.outletFilter = outletFilter.split(" ")[1]; // Extract outlet name
+    }
+    
+    navigate("/order-details", { state: filters });
+  };
+
   return (
     <div className="p-6 bg-gray-100">
       <h1 className="text-2xl font-bold mb-6">Outlet Dashboard</h1>
@@ -151,24 +166,28 @@ const OutletDashboard = () => {
           value={summary.totalAmtCollected}
           icon={<CurrencyDollarIcon className="h-6 w-6 text-green-500" />}
           color="bg-green-100"
+          onClick={() => handleCardClick("Completed")} // Navigate to order details with 'Completed' status
         />
         <StatCard
           title="Total Orders"
           value={summary.totalOrders}
           icon={<CubeIcon className="h-6 w-6 text-yellow-500" />}
           color="bg-yellow-100"
+          onClick={() => handleCardClick("All")} // Navigate to all order details
         />
         <StatCard
           title="Orders Completed"
           value={summary.ordersCompleted}
           icon={<CheckCircleIcon className="h-6 w-6 text-green-500" />}
           color="bg-green-100"
+          onClick={() => handleCardClick("Completed")} // Navigate to order details with 'Completed' status
         />
         <StatCard
           title="Orders Pending"
           value={summary.ordersPending}
           icon={<ClockIcon className="h-6 w-6 text-red-500" />}
           color="bg-red-100"
+          onClick={() => handleCardClick("Pending")} // Navigate to order details with 'Pending' status
         />
       </div>
     </div>
@@ -192,8 +211,11 @@ const FilterDropdown = ({ value, onChange, options }) => (
   </div>
 );
 
-const StatCard = ({ title, value, icon, color }) => (
-  <div className="bg-white p-6 rounded-lg shadow-sm">
+const StatCard = ({ title, value, icon, color, onClick }) => (
+  <div
+    className="bg-white p-6 rounded-lg shadow-sm cursor-pointer"
+    onClick={onClick}
+  >
     <div className="flex justify-between items-start">
       <div>
         <p className="text-sm text-gray-500 mb-1">{title}</p>
