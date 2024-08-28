@@ -53,24 +53,25 @@ function App() {
             <div className="flex flex-1 overflow-hidden">
               <Sidebar onLogout={handleLogout} />
               <main className="flex-1 overflow-auto p-4 bg-gray-50">
-                <Routes>
-                  <Route path="/" element={<Dash />} />
-                  <Route path="/customer" element={<Customer />} />
-                  <Route path="/order" element={<Order />} />
-                  <Route path="/outlets" element={<OutletDashboard />} />
-                  <Route path="/outlet-details" element={<OutletDetails />} />
-                  <Route path="/outlets/new" element={<AddNewOutlet />} />
-                  <Route path="/delivery-partners" element={<DeliveryPartnerList />} />
-                  <Route path="/delivery-partners/new" element={<AddNewDeliveryPartner />} />
-                  <Route path="/outlet-partners" element={<OutletPartnerList />} />
-                  <Route path="/outlet-partners/new" element={<AddNewOutletPartner />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/contact/newcustomer" element={<AddNewCustomer />} />
-                  <Route path="/contact/newdeliverypartner" element={<AddNewDeliveryPartner />} />
-                  <Route path="/contact/newoutlet" element={<AddNewOutlet />} />
-                  <Route path="/contact/newoutletpartner" element={<AddNewOutletPartner />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+              <Routes>
+                <Route path="/" element={<Dash />} />
+                <Route path="/customer" element={<Customer />} />
+                <Route path="/order" element={<Order />} />
+                <Route path="/order-details" element={<Order />} /> {/* Add this line */}
+                <Route path="/outlets" element={<OutletDashboard />} />
+                <Route path="/outlet-details" element={<OutletDetails />} />
+                <Route path="/outlets/new" element={<AddNewOutlet />} />
+                <Route path="/delivery-partners" element={<DeliveryPartnerList />} />
+                <Route path="/delivery-partners/new" element={<AddNewDeliveryPartner />} />
+                <Route path="/outlet-partners" element={<OutletPartnerList />} />
+                <Route path="/outlet-partners/new" element={<AddNewOutletPartner />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/contact/newcustomer" element={<AddNewCustomer />} />
+                <Route path="/contact/newdeliverypartner" element={<AddNewDeliveryPartner />} />
+                <Route path="/contact/newoutlet" element={<AddNewOutlet />} />
+                <Route path="/contact/newoutletpartner" element={<AddNewOutletPartner />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
               </main>
             </div>
           </>
