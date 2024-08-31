@@ -150,7 +150,7 @@ const AddNewOutlet = () => {
             <Camera className="w-8 h-8 text-gray-400" />
           )}
         </div>
-        <label className="cursor-pointer text-blue-500 text-sm font-medium">
+        <label className="cursor-pointer text-orange-500 text-sm font-medium">
           Upload Shop Photo
           <input
             type="file"
@@ -267,7 +267,7 @@ const AddNewOutlet = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+          className="w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition duration-300"
         >
           Add Now
         </button>

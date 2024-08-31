@@ -112,7 +112,7 @@ const OrderDetails = () => {
           <input
             type="text"
             placeholder="Search"
-            className="pl-10 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="pl-10 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -154,7 +154,7 @@ const OrderDetails = () => {
             ]}
           />
           <button
-            className="flex items-center px-4 py-2 text-blue-600 font-medium text-sm"
+            className="flex items-center px-4 py-2 text-orange-600 font-medium text-sm"
             onClick={resetFilters}
           >
             <RotateCcw className="w-4 h-4 mr-2" />

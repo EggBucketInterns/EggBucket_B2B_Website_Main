@@ -84,7 +84,7 @@ const Dashboard = () => {
           <StatCard
             title="Total Amount Pending"
             value={`₹${summary.totalAmtCollected}`}
-            icon={<Coins className="text-blue-500" />}
+            icon={<Coins className="text-orange-500" />}
           />
         </div>
       </div>

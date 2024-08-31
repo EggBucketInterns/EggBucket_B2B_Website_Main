@@ -86,7 +86,7 @@ const EditDeliveryPartner = ({ partner, onClose, onSave }) => {
               <Camera className="w-8 h-8 text-gray-400" />
             )}
           </div>
-          <label className="cursor-pointer text-blue-500 text-sm font-medium">
+          <label className="cursor-pointer text-orange-500 text-sm font-medium">
             Update Photo
             <input
               type="file"
@@ -158,7 +158,7 @@ const EditDeliveryPartner = ({ partner, onClose, onSave }) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700"
             >
               Save Changes
             </button>

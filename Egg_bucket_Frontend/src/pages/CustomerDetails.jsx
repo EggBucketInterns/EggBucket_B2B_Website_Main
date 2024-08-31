@@ -154,11 +154,11 @@ const CustomerDetails = () => {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-blue-600" onClick={() => fetchCustomers('?customerName=')}>
+            <button className="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-orange-600" onClick={() => fetchCustomers('?customerName=')}>
               <RotateCcw className="w-4 h-4 mr-1" />
               Reset Filter
             </button>
-            <button onClick={() => navigate('/contact/newcustomer')} className="px-3 py-2 bg-blue-600 text-white rounded-md text-sm">
+            <button onClick={() => navigate('/contact/newcustomer')} className="px-3 py-2 bg-orange-600 text-white rounded-md text-sm">
               REGISTER NEW CUSTOMER
             </button>
             <button className="px-3 py-2 bg-emerald-500 text-white rounded-md text-sm">

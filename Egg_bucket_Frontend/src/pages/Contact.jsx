@@ -19,7 +19,7 @@ const Contact = () => {
           <button
             key={index}
             onClick={() => navigate(button.route)}
-            className="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+            className="w-full bg-orange-500 text-white py-3 px-4 rounded-md hover:bg-orange-600 transition duration-300"
           >
             {button.name}
           </button>

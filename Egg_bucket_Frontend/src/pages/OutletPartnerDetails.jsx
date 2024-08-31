@@ -144,11 +144,11 @@ const OutletPartnerDetails = () => {
             </div>
           </div>
           <div className="flex flex-wrap gap-1">
-            <button className="flex items-center px-2 py-1 border border-gray-300 rounded-md text-xs text-blue-600" onClick={() => { setOutlet(''); fetchOutletPartners(); }}>
+            <button className="flex items-center px-2 py-1 border border-gray-300 rounded-md text-xs text-orange-600" onClick={() => { setOutlet(''); fetchOutletPartners(); }}>
               <RotateCcw className="w-4 h-4 mr-1" />
               Reset Filter
             </button>
-            <button onClick={() => navigate('/contact/newoutletpartner')} className="px-2 py-1 bg-blue-600 text-white rounded-md text-xs">
+            <button onClick={() => navigate('/contact/newoutletpartner')} className="px-2 py-1 bg-orange-600 text-white rounded-md text-xs">
               REGISTER NEW OUTLET PARTNER
             </button>
             <button className="px-2 py-1 bg-emerald-500 text-white rounded-md text-xs">

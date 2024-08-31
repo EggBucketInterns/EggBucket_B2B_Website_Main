@@ -26,7 +26,7 @@ import {
 
 const MenuItem = ({ icon: Icon, text, active, onClick }) => (
   <li
-    className={`flex items-center px-4 py-2 mb-1 text-sm cursor-pointer ${active ? 'bg-blue-100 text-blue-600 rounded-lg font-medium' : 'text-gray-700 hover:bg-gray-100 rounded-lg'}`}
+    className={`flex items-center px-4 py-2 mb-1 text-sm cursor-pointer ${active ? 'bg-orange-100 text-orange-600 rounded-lg font-medium' : 'text-gray-700 hover:bg-gray-100 rounded-lg'}`}
     onClick={onClick}
   >
     <Icon className="h-5 w-5 mr-3" />
