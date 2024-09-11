@@ -97,27 +97,37 @@ const OrderDetails = () => {
     fetchFilteredOrders();
   }, [outletFilter, customerFilter, statusFilter, outlets, customers]);
 
-        const data = await response.json();
-      
+  // Delete an order
+  const deleteOrder = async (orderId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this order?");
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(
+        `https://eggbucket-website.onrender.com/orders/egg-bucket-b2b/deleteOrder/${orderId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await response.json();
+
       if (response.ok) {
-        // Remove the deleted order from the state
-        setOrders(orders.filter(order => order._id !== orderId));
+        setOrders(orders.filter((order) => order._id !== orderId));
         alert(data.message || "Order deleted successfully");
       } else {
-        // Handle different types of errors
         if (response.status === 404) {
           alert("Order not found or cannot be deleted. It may not be in 'intransit' or 'pending' state.");
         } else {
-          alert(`Failed to delete order: ${data.error || 'Unknown error occurred'}`);
+          alert(`Failed to delete order: ${data.error || "Unknown error occurred"}`);
         }
       }
     } catch (error) {
       console.error("Error deleting order:", error);
       alert("An error occurred while deleting the order. Please check your network connection and try again.");
     }
-  }
-};
+  };
 
+  // Reset filters
   const resetFilters = () => {
     setDateFilter("Date");
     setOutletFilter("Outlet");
@@ -199,7 +209,7 @@ const OrderDetails = () => {
             <tbody>
               {orders.map((order) => (
                 <tr key={order._id} className="border-b border-gray-200">
-                  {/* ... (previous table cells remain unchanged) */}
+                  {/* Render other table cells as needed */}
                   <td className="p-3">
                     {(order.status === 'intransit' || order.status === 'pending') && (
                       <button
