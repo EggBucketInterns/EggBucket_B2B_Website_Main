@@ -1,23 +1,17 @@
 import React from 'react';
-import { Search, ChevronDown, Menu } from 'lucide-react';
-import img from "../assets/images/th.jpeg"
-import logo from "../assets/images/logo-egg.jpg"
+import { Search, Menu } from 'lucide-react';
+import logo from "../assets/images/logo-egg.jpg";
 
 const Header = () => {
   return (
     <header className="flex items-center justify-between px-4 py-2 bg-white shadow-sm">
-      <div className="flex items-center">
+      <div className="flex items-center w-1/3">
         <Menu className="mr-4 h-6 w-6 text-gray-500 md:hidden" />
-        
-        <img
-          src={logo}
-          alt="User avatar"
-          className=" pl-12 h-20 "
-        />
+        <img src={logo} alt="User avatar" className="pl-12 h-20" />
       </div>
       
-      <div className="flex-grow mx-4 max-w-xl">
-        <div className="relative">
+      <div className="flex-grow flex justify-center">
+        <div className="relative w-full max-w-xl">
           <input
             type="text"
             placeholder="Search"
@@ -29,18 +23,6 @@ const Header = () => {
         </div>
       </div>
       
-      <div className="flex items-center">
-        <img
-          src={img}
-          alt="User avatar"
-          className="w-8 h-8 rounded-full"
-        />
-        <div className="ml-2 hidden md:block">
-          <p className="text-sm font-medium text-gray-700">ADMIN</p>
-          <p className="text-xs text-gray-500">Admin</p>
-        </div>
-        <ChevronDown className="ml-2 h-4 w-4 text-gray-500" />
-      </div>
     </header>
   );
 };
