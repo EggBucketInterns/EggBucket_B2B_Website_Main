@@ -128,7 +128,7 @@ exports.updateOrder = async (req, res) => {
 exports.deleteOrder = async (req, res) => {
   try {
     const orderId = req.params.id; 
-    const order = await Order.findOneAndDelete({_id:orderId,status:{$in:["intransit", "pending"]}});//delete
+    const order = await Order.findOneAndDelete({_id:orderId,status:{$in:["intransit", "pending","completed"]}});//delete
 
     if (!order) {
       return res.status(404).json({ error: "This order is not in intransit or pending state"});
