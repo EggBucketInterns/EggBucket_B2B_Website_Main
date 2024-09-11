@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const cors = require("cors"); // Import the cors middleware
+const cors = require('cors'); // Import the cors middleware
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './config.env' });
@@ -19,14 +19,20 @@ var adminRouter = require('./routes/admin');
 var authRouter = require('./routes/auth');
 var paymentRouter = require('./routes/payments');
 
-require("./models/db");
+require('./models/db');
 
 var app = express();
+
+// CORS setup: Allow frontend requests
+app.use(cors({
+  origin: 'http://localhost:3000', // Frontend URL
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -36,7 +42,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Define API routes
-app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/outletPartners', outletpartnerRouter);
 app.use('/deliveryDrivers', deliverypartnerRoute);
@@ -54,15 +59,15 @@ app.get('*', (req, res) => {
 
 // Error handling for 404
 app.use(function (req, res, next) {
-  next(createError(404));
+  res.status(404).json({ message: 'Not Found' });
 });
 
 // Error handler
 app.use(function (err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status || 500).json({
+    message: err.message,
+    error: req.app.get('env') === 'development' ? err : {},
+  });
 });
 
 module.exports = app;

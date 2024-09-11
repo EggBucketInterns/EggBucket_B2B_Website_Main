@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({
@@ -10,6 +10,7 @@ const LoginPage = ({ setIsAuthenticated }) => {
   const [errors, setErrors] = useState({
     email: '',
     password: '',
+    general: '', // Added for general errors
   });
 
   const navigate = useNavigate();
@@ -38,20 +39,43 @@ const LoginPage = ({ setIsAuthenticated }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const hardcodedEmail = 'admin@example.com';
-    const hardcodedPassword = 'admin123';
+    try {
+      const response = await fetch('http://eggbucket-website.onrender.com/admin/egg-bucket-b2b/admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    if (formData.email === hardcodedEmail && formData.password === hardcodedPassword) {
-      console.log('Login successful!');
-      setIsAuthenticated(true);
-      navigate('/');  // Redirect to the dashboard after successful login
-    } else {
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Login successful!', data);
+        setIsAuthenticated(true);
+        navigate('/'); // Redirect to the dashboard after successful login
+      } else if (response.status === 404) {
+        setErrors({
+          ...errors,
+          general: 'Endpoint not found. Please check the URL or contact support.',
+        });
+      } else {
+        const errorData = await response.json();
+        setErrors({
+          ...errors,
+          general: errorData.message || 'Invalid email or password',
+          email: '',
+          password: '',
+        });
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
       setErrors({
         ...errors,
-        email: 'Invalid email or password',
+        general: 'Error occurred. Please try again later.',
+        email: '',
         password: '',
       });
     }
@@ -92,6 +116,7 @@ const LoginPage = ({ setIsAuthenticated }) => {
             />
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
+          {errors.general && <p className="text-red-500 text-sm mt-1">{errors.general}</p>}
           <button
             type="submit"
             className="w-full bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition duration-200"
@@ -99,6 +124,7 @@ const LoginPage = ({ setIsAuthenticated }) => {
             Login
           </button>
         </form>
+        {/* Uncomment if you have a registration page */}
         {/* <p className="text-sm text-gray-500 mt-4">
           Don't have an account?{' '}
           <Link to="/register" className="text-purple-500 hover:underline">
