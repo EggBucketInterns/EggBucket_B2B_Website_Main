@@ -128,46 +128,46 @@ exports.updateOrder = async (req, res) => {
 exports.deleteOrder = async (req, res) => {
   try {
     const orderId = req.params.id; 
-    const order = await Order.findOneAndDelete(orderId);//delete
+    const order = await Order.findOneAndDelete({_id:orderId,status:{$in:["intransit", "pending"]}});//delete
 
     if (!order) {
-      return res.status(404).json({ error: "Order not found" });
+      return res.status(404).json({ error: "This order is not in intransit or pending state"});
     }
-    if(order.status='delivered'){
-    try{
-    let {outletId,deliveryId}=order
-    const outlet=await Outlet.findById(outletId)
-    const outletPartner=await OutletPartner.findById(outlet.outletPartner)
-    const deleveryDriver=await Driver.findById(deliveryId)
+  //   if(order.status='delivered'){
+  //   try{
+  //   let {outletId,deliveryId}=order
+  //   const outlet=await Outlet.findById(outletId)
+  //   const outletPartner=await OutletPartner.findById(outlet.outletPartner)
+  //   const deleveryDriver=await Driver.findById(deliveryId)
 
-    if(outletPartner.payments.length){
-      outletPartner.payments.map((el)=>{
-          if(el.dId==deliveryId.toString())
-          {
+  //   if(outletPartner.payments.length){
+  //     outletPartner.payments.map((el)=>{
+  //         if(el.dId==deliveryId.toString())
+  //         {
            
-            el.collectionAmt=el.collectionAmt-order.amount     
+  //           el.collectionAmt=el.collectionAmt-order.amount     
               
-          }
-      })
-    }
+  //         }
+  //     })
+  //   }
     
-    if(deleveryDriver.payments.length){
-      deleveryDriver.payments.map((el)=>{
-        if(el.oId==outletId.toString()){
+  //   if(deleveryDriver.payments.length){
+  //     deleveryDriver.payments.map((el)=>{
+  //       if(el.oId==outletId.toString()){
         
-          el.returnAmt=el.returnAmt-order.amount     
+  //         el.returnAmt=el.returnAmt-order.amount     
     
-        }
-      })
-    }
+  //       }
+  //     })
+  //   }
 
-      res.json({message: "Order deleted successfully"});
+  //     res.json({message: "Order deleted successfully"});
     
-    }catch{
-      res.json({message: "Order deleted successfully, but anomaly in updatinf delevery or outlet partner"});
-    }
-  }
-    
+  //   }catch{
+  //     res.json({message: "Order deleted successfully, but anomaly in updatinf delevery or outlet partner"});
+  //   }
+  // }
+  res.status(200).json({message: "Order deleted successfully"});
   } catch (err) {
     res.status(500).json({ error: "Failed to delete order", details: err.message });
   }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Search, Filter, ChevronDown, RotateCcw } from "lucide-react";
+import { Search, Filter, ChevronDown, RotateCcw, Trash2 } from "lucide-react";
 
 const OrderDetails = () => {
   const location = useLocation();
@@ -97,6 +97,28 @@ const OrderDetails = () => {
     fetchFilteredOrders();
   }, [outletFilter, customerFilter, statusFilter, outlets, customers]);
 
+  const deleteOrder = async (orderId) => {
+    if (window.confirm("Are you sure you want to delete this order?")) {
+      try {
+        const response = await fetch(`https://eggbucket-website.onrender.com/orders/egg-bucket-b2b/deleteOrder/${orderId}`, {
+          method: 'DELETE',
+        });
+        
+        if (response.ok) {
+          // Remove the deleted order from the state
+          setOrders(orders.filter(order => order._id !== orderId));
+          alert("Order deleted successfully");
+        } else {
+          const data = await response.json();
+          alert(`Failed to delete order: ${data.error}`);
+        }
+      } catch (error) {
+        console.error("Error deleting order:", error);
+        alert("An error occurred while deleting the order");
+      }
+    }
+  };
+
   const resetFilters = () => {
     setDateFilter("Date");
     setOutletFilter("Outlet");
@@ -166,31 +188,20 @@ const OrderDetails = () => {
           <table className="w-full">
             <thead>
               <tr className="bg-gray-50">
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  OUTLET 
-                </th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  CUSTOMER ID
-                </th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  NUMBER OF TRAYS
-                </th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  DELIVERY PARTNER
-                </th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  AMOUNT COLLECTED
-                </th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  STATUS
-                </th>
+                <th className="text-left p-3 text-sm font-semibold text-gray-600">OUTLET</th>
+                <th className="text-left p-3 text-sm font-semibold text-gray-600">CUSTOMER ID</th>
+                <th className="text-left p-3 text-sm font-semibold text-gray-600">NUMBER OF TRAYS</th>
+                <th className="text-left p-3 text-sm font-semibold text-gray-600">DELIVERY PARTNER</th>
+                <th className="text-left p-3 text-sm font-semibold text-gray-600">AMOUNT COLLECTED</th>
+                <th className="text-left p-3 text-sm font-semibold text-gray-600">STATUS</th>
+                <th className="text-left p-3 text-sm font-semibold text-gray-600">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order._id} className="border-b border-gray-200">
                   <td className="p-3 text-sm">
-                    {order.outletId ? order.outletId.outletArea+" ID:"+order.outletId.outletNumber: "N/A"}
+                    {order.outletId ? `${order.outletId.outletArea} ID:${order.outletId.outletNumber}` : "N/A"}
                   </td>
                   <td className="p-3 text-sm">
                     {order.customerId ? order.customerId.customerName : "N/A"}
@@ -201,6 +212,15 @@ const OrderDetails = () => {
                   </td>
                   <td className="p-3 text-sm">₹{order.amount}</td>
                   <td className="p-3">{order.status}</td>
+                  <td className="p-3">
+                    <button
+                      onClick={() => deleteOrder(order._id)}
+                      className="text-red-600 hover:text-red-800"
+                      title="Delete Order"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
