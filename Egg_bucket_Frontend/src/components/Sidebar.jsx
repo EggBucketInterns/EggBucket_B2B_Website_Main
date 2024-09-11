@@ -50,7 +50,6 @@ const Sidebar = ({ onLogout }) => {
 
   const pageItems = [
     { icon: Users, text: 'Forms', path: '/contact' },
-    { icon: Settings, text: 'Settings', path: '/settings' },
     { icon: LogOut, text: 'Logout', path: '/logout' },
   ];
 
