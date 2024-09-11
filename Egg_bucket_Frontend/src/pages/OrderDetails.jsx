@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Search, Filter, ChevronDown, RotateCcw } from "lucide-react";
+import { Search, Filter, ChevronDown, RotateCcw, Trash2 } from "lucide-react";
 
 const OrderDetails = () => {
   const location = useLocation();
@@ -14,6 +14,7 @@ const OrderDetails = () => {
   const [orders, setOrders] = useState([]);
   const [outlets, setOutlets] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Fetch the list of outlets
   useEffect(() => {
@@ -104,6 +105,29 @@ const OrderDetails = () => {
     setStatusFilter("Status");
   };
 
+  const deleteOrder = async (orderId) => {
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`https://eggbucket-website.onrender.com/orders/egg-bucket-b2b/deleteOrder/${orderId}`, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // Remove the deleted order from the state
+        setOrders(orders.filter(order => order._id !== orderId));
+      } else {
+        console.error("Failed to delete order:", data.error);
+        // Optionally, show an error message to the user
+      }
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      // Optionally, show an error message to the user
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+
   return (
     <div className="h-full flex flex-col bg-gray-50 p-6">
       <div className="flex justify-between items-center mb-6">
@@ -184,23 +208,28 @@ const OrderDetails = () => {
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">
                   STATUS
                 </th>
+                <th className="text-left p-3 text-sm font-semibold text-gray-600">
+                ACTIONS
+                </th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order._id} className="border-b border-gray-200">
-                  <td className="p-3 text-sm">
-                    {order.outletId ? order.outletId.outletArea+" ID:"+order.outletId.outletNumber: "N/A"}
+                  {/* ... (previous table cells) */}
+                  <td className="p-3">
+                    <button
+                      onClick={() => deleteOrder(order._id)}
+                      disabled={isDeleting || !['intransit', 'pending'].includes(order.status.toLowerCase())}
+                      className={`p-1 rounded ${
+                        isDeleting || !['intransit', 'pending'].includes(order.status.toLowerCase())
+                          ? 'text-gray-400 cursor-not-allowed'
+                          : 'text-red-600 hover:bg-red-100'
+                      }`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </td>
-                  <td className="p-3 text-sm">
-                    {order.customerId ? order.customerId.customerName : "N/A"}
-                  </td>
-                  <td className="p-3 text-sm">{order.numTrays}</td>
-                  <td className="p-3 text-sm">
-                    {order.deliveryId ? order.deliveryId.firstName : "N/A"}
-                  </td>
-                  <td className="p-3 text-sm">₹{order.amount}</td>
-                  <td className="p-3">{order.status}</td>
                 </tr>
               ))}
             </tbody>
