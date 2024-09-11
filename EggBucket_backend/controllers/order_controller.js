@@ -3,7 +3,6 @@ const OutletPartner=require('../models/outlet_partner_model')
 const Driver=require('../models/delivery_driver_model')
 const Outlet=require('../models/outlet_model')
 const ApiFeatures=require('../utils/apifeatures')
-const logger = require("../utils/logger");
 
 // Create a new order
 exports.createOrder = async (req, res) => {
@@ -127,61 +126,50 @@ exports.updateOrder = async (req, res) => {
 
 // Delete an order by ID
 exports.deleteOrder = async (req, res) => {
-  const session = await Order.startSession();
-  session.startTransaction();
-
   try {
-    const orderId = req.params.id;
-
-    if (!orderId.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({ error: "Invalid order ID format" });
-    }
-
-    const order = await Order.findById(orderId).session(session);
+    const orderId = req.params.id; 
+    const order = await Order.findOneAndDelete({_id:orderId,status:{$in:["intransit", "pending"]}});//delete
 
     if (!order) {
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(404).json({ error: "Order not found" });
+      return res.status(404).json({ error: "This order is not in intransit or pending state"});
     }
+  //   if(order.status='delivered'){
+  //   try{
+  //   let {outletId,deliveryId}=order
+  //   const outlet=await Outlet.findById(outletId)
+  //   const outletPartner=await OutletPartner.findById(outlet.outletPartner)
+  //   const deleveryDriver=await Driver.findById(deliveryId)
 
-    if (!["intransit", "pending"].includes(order.status)) {
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(400).json({ error: "This order cannot be deleted due to its current status" });
-    }
+  //   if(outletPartner.payments.length){
+  //     outletPartner.payments.map((el)=>{
+  //         if(el.dId==deliveryId.toString())
+  //         {
+           
+  //           el.collectionAmt=el.collectionAmt-order.amount     
+              
+  //         }
+  //     })
+  //   }
+    
+  //   if(deleveryDriver.payments.length){
+  //     deleveryDriver.payments.map((el)=>{
+  //       if(el.oId==outletId.toString()){
+        
+  //         el.returnAmt=el.returnAmt-order.amount     
+    
+  //       }
+  //     })
+  //   }
 
-    order.status = "deleted";
-    order.deletedAt = new Date();
-    await order.save({ session });
-
-    if (order.outletId && order.deliveryId) {
-      const outlet = await Outlet.findById(order.outletId).session(session);
-      if (outlet && outlet.outletPartner) {
-        await OutletPartner.updateOne(
-          { _id: outlet.outletPartner, "payments.dId": order.deliveryId },
-          { $inc: { "payments.$.collectionAmt": -order.amount } }
-        ).session(session);
-      }
-
-      await Driver.updateOne(
-        { _id: order.deliveryId, "payments.oId": order.outletId },
-        { $inc: { "payments.$.returnAmt": -order.amount } }
-      ).session(session);
-    }
-
-    await session.commitTransaction();
-    session.endSession();
-
-    logger.info(`Order ${orderId} soft deleted by user ${req.user.id}`);
-
-    res.status(200).json({ message: "Order soft deleted successfully" });
+  //     res.json({message: "Order deleted successfully"});
+    
+  //   }catch{
+  //     res.json({message: "Order deleted successfully, but anomaly in updatinf delevery or outlet partner"});
+  //   }
+  // }
+  res.status(200).json({message: "Order deleted successfully"});
   } catch (err) {
-    await session.abortTransaction();
-    session.endSession();
-    logger.error(`Failed to delete order: ${err.message}`);
     res.status(500).json({ error: "Failed to delete order", details: err.message });
   }
 };
-
 
