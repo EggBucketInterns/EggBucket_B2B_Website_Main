@@ -127,47 +127,48 @@ exports.updateOrder = async (req, res) => {
 // Delete an order by ID
 exports.deleteOrder = async (req, res) => {
   try {
-    const orderId = req.params.id; 
-    const order = await Order.findOneAndDelete({_id:orderId,status:{$in:["intransit", "pending"]}});//delete
+    const orderId = req.params.id;
+    
+    // First, find the order without deleting it
+    const order = await Order.findOne({_id: orderId, status: {$in: ["intransit", "pending"]}});
 
     if (!order) {
-      return res.status(404).json({ error: "This order is not in intransit or pending state"});
+      return res.status(404).json({ error: "Order not found or not in 'intransit' or 'pending' state" });
     }
-  //   if(order.status='delivered'){
-  //   try{
-  //   let {outletId,deliveryId}=order
-  //   const outlet=await Outlet.findById(outletId)
-  //   const outletPartner=await OutletPartner.findById(outlet.outletPartner)
-  //   const deleveryDriver=await Driver.findById(deliveryId)
 
-  //   if(outletPartner.payments.length){
-  //     outletPartner.payments.map((el)=>{
-  //         if(el.dId==deliveryId.toString())
-  //         {
-           
-  //           el.collectionAmt=el.collectionAmt-order.amount     
-              
-  //         }
-  //     })
-  //   }
-    
-  //   if(deleveryDriver.payments.length){
-  //     deleveryDriver.payments.map((el)=>{
-  //       if(el.oId==outletId.toString()){
-        
-  //         el.returnAmt=el.returnAmt-order.amount     
-    
-  //       }
-  //     })
-  //   }
+    // If the order exists and is in the correct state, proceed with deletion
+    await Order.findByIdAndDelete(orderId);
 
-  //     res.json({message: "Order deleted successfully"});
-    
-  //   }catch{
-  //     res.json({message: "Order deleted successfully, but anomaly in updatinf delevery or outlet partner"});
-  //   }
-  // }
-  res.status(200).json({message: "Order deleted successfully"});
+    // Update related documents
+    try {
+      const { outletId, deliveryId, amount } = order;
+      const outlet = await Outlet.findById(outletId);
+      
+      if (outlet && outlet.outletPartner) {
+        const outletPartner = await OutletPartner.findById(outlet.outletPartner);
+        if (outletPartner) {
+          const paymentIndex = outletPartner.payments.findIndex(payment => payment.dId.toString() === deliveryId.toString());
+          if (paymentIndex !== -1) {
+            outletPartner.payments[paymentIndex].collectionAmt -= amount;
+            await outletPartner.save();
+          }
+        }
+      }
+
+      const deliveryDriver = await Driver.findById(deliveryId);
+      if (deliveryDriver) {
+        const paymentIndex = deliveryDriver.payments.findIndex(payment => payment.oId.toString() === outletId.toString());
+        if (paymentIndex !== -1) {
+          deliveryDriver.payments[paymentIndex].returnAmt -= amount;
+          await deliveryDriver.save();
+        }
+      }
+    } catch (updateError) {
+      console.error("Error updating related documents:", updateError);
+      // We don't want to fail the whole operation if this update fails
+    }
+
+    res.status(200).json({ message: "Order deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete order", details: err.message });
   }
