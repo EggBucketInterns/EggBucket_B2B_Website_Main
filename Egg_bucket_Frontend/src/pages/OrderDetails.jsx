@@ -97,33 +97,26 @@ const OrderDetails = () => {
     fetchFilteredOrders();
   }, [outletFilter, customerFilter, statusFilter, outlets, customers]);
 
-  const deleteOrder = async (orderId) => {
-    if (window.confirm("Are you sure you want to delete this order?")) {
-      try {
-        const response = await fetch(`https://eggbucket-website.onrender.com/orders/egg-bucket-b2b/deleteOrder/${orderId}`, {
-          method: 'DELETE',
-        });
-        
         const data = await response.json();
-        
-        if (response.ok) {
-          // Remove the deleted order from the state
-          setOrders(orders.filter(order => order._id !== orderId));
-          alert(data.message || "Order deleted successfully");
+      
+      if (response.ok) {
+        // Remove the deleted order from the state
+        setOrders(orders.filter(order => order._id !== orderId));
+        alert(data.message || "Order deleted successfully");
+      } else {
+        // Handle different types of errors
+        if (response.status === 404) {
+          alert("Order not found or cannot be deleted. It may not be in 'intransit' or 'pending' state.");
         } else {
-          // Handle different types of errors
-          if (response.status === 404) {
-            alert("Order not found or cannot be deleted. It may not be in 'intransit' or 'pending' state.");
-          } else {
-            alert(`Failed to delete order: ${data.error || 'Unknown error occurred'}`);
-          }
+          alert(`Failed to delete order: ${data.error || 'Unknown error occurred'}`);
         }
-      } catch (error) {
-        console.error("Error deleting order:", error);
-        alert("An error occurred while deleting the order. Please check your network connection and try again.");
       }
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      alert("An error occurred while deleting the order. Please check your network connection and try again.");
     }
-  };
+  }
+};
 
   const resetFilters = () => {
     setDateFilter("Date");
