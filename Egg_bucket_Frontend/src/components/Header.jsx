@@ -29,18 +29,6 @@ const Header = () => {
         </div>
       </div>
       
-      <div className="flex items-center">
-        <img
-          src={img}
-          alt="User avatar"
-          className="w-8 h-8 rounded-full"
-        />
-        <div className="ml-2 hidden md:block">
-          <p className="text-sm font-medium text-gray-700">ADMIN</p>
-          <p className="text-xs text-gray-500">Admin</p>
-        </div>
-        <ChevronDown className="ml-2 h-4 w-4 text-gray-500" />
-      </div>
     </header>
   );
 };
