@@ -73,6 +73,11 @@ exports.orderAggregate = async (req, res) => {
               $cond: [{ $eq: ["$status", "cancelled"] }, 1, 0],
             },
           },
+          ordersDelivered: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "delivered"] }, 1, 0],
+            },
+          }
         },
       },
     ]);

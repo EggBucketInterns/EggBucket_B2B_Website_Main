@@ -104,6 +104,30 @@ const OrderDetails = () => {
     setStatusFilter("Status");
   };
 
+  const handleDelete = async (orderId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this order?");
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(
+        `https://eggbucket-website.onrender.com/orders/egg-bucket-b2b/order/${orderId}`,
+        { method: "DELETE" }
+      );
+
+      if (response.ok) {
+        // Filter out the deleted order from the state
+        setOrders((prevOrders) => prevOrders.filter((order) => order._id !== orderId));
+        alert('Oder delected successfully!')
+      } else {
+        console.error("Failed to delete the order");
+        alert('Order is not in pending or intransit state!')
+      }
+    } catch (error) {
+      console.error("Error deleting the order:", error);
+      alert('Something went wrong..')
+    }
+  };
+
   return (
     <div className="h-full flex flex-col bg-gray-50 p-6">
       <div className="flex justify-between items-center mb-6">
@@ -151,6 +175,7 @@ const OrderDetails = () => {
               "Pending",
               "Cancelled",
               "Completed",
+              "Delivered"
             ]}
           />
           <button
@@ -170,7 +195,7 @@ const OrderDetails = () => {
                   OUTLET 
                 </th>
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  CUSTOMER ID
+                  CUSTOMER NAME
                 </th>
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">
                   NUMBER OF TRAYS
@@ -184,13 +209,16 @@ const OrderDetails = () => {
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">
                   STATUS
                 </th>
+                <th className="text-left p-3 text-sm font-semibold text-gray-600">
+                  ACTIONS
+                </th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order._id} className="border-b border-gray-200">
                   <td className="p-3 text-sm">
-                    {order.outletId ? order.outletId.outletArea+" ID:"+order.outletId.outletNumber: "N/A"}
+                    {order.outletId ? order.outletId.outletArea+" ID:"+order.outletId.outletNumber : "N/A"}
                   </td>
                   <td className="p-3 text-sm">
                     {order.customerId ? order.customerId.customerName : "N/A"}
@@ -201,6 +229,14 @@ const OrderDetails = () => {
                   </td>
                   <td className="p-3 text-sm">₹{order.amount}</td>
                   <td className="p-3">{order.status}</td>
+                  <td className="p-3 text-sm">
+                    <button
+                      className="text-red-600"
+                      onClick={() => handleDelete(order._id)} // Call the delete handler
+                    >
+                      Delete
+                    </button>
+                  </td> {/* New Actions cell */}
                 </tr>
               ))}
             </tbody>

@@ -24,11 +24,13 @@ require('./models/db');
 var app = express();
 
 // CORS setup: Allow frontend requests
-app.use(cors({
-  origin: "*",  
+app.use(cors(
+  {
+  origin: ['https://eggbucket-website-1.onrender.com', 'https://eggbucket-website.onrender.com'],
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
-}));
+}
+));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -42,6 +44,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Define API routes
+app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/outletPartners', outletpartnerRouter);
 app.use('/deliveryDrivers', deliverypartnerRoute);

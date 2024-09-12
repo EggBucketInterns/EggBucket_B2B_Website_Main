@@ -12,6 +12,7 @@ const Dashboard = () => {
     totalAmtCollected: 0,
     ordersIntransit: 0,
     ordersCancelled: 0,
+    ordersDelivered: 0
   });
 
   const navigate = useNavigate();
@@ -56,6 +57,8 @@ const Dashboard = () => {
             icon={<CheckCircle className="text-green-500" />}
           />
         </div>
+        
+
         <div onClick={() => navigateToOrderDetails('Pending')} className="cursor-pointer">
           <StatCard
             title="Orders Pending"
@@ -70,6 +73,13 @@ const Dashboard = () => {
           <StatCard
             title="Orders Intransit"
             value={summary.ordersIntransit}
+            icon={<Truck className="text-pink-500" />}
+          />
+        </div>
+        <div onClick={() => navigateToOrderDetails('Delivered')} className="cursor-pointer">
+          <StatCard
+            title="Orders Delivered"
+            value={summary.ordersDelivered}
             icon={<Truck className="text-pink-500" />}
           />
         </div>
