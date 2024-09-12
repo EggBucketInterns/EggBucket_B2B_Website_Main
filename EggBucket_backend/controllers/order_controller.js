@@ -137,11 +137,11 @@ exports.deleteOrder = async (req, res) => {
 
     console.log("Order status:", order.status); // Log the status of the order
 
-    if (["intransit", "pending", "completed"].includes(order.status)) {
-      await Order.deleteOne({ _id: orderId });
+    if (["intransit", "pending"].includes(order.status)) {
+        await Order.findByIdAndDelete(orderId);
       res.status(200).json({ message: "Order deleted successfully" });
     } else {
-      return res.status(404).json({ error: "This order is not in an intransit, pending, or completed state" });
+      return res.status(404).json({ error: "This order is not in an intransit or pending state" });
     }
   } catch (err) {
     res.status(500).json({ error: "Failed to delete order", details: err.message });

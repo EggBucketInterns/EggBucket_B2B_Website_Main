@@ -110,18 +110,21 @@ const OrderDetails = () => {
 
     try {
       const response = await fetch(
-        `https://eggbucket-website.onrender.com/orders/egg-bucket-b2b/deleteOrder/${orderId}`,
+        `https://eggbucket-website.onrender.com/orders/egg-bucket-b2b/order/${orderId}`,
         { method: "DELETE" }
       );
 
       if (response.ok) {
         // Filter out the deleted order from the state
         setOrders((prevOrders) => prevOrders.filter((order) => order._id !== orderId));
+        alert('Oder delected successfully!')
       } else {
         console.error("Failed to delete the order");
+        alert('Order is not in pending or intransit state!')
       }
     } catch (error) {
       console.error("Error deleting the order:", error);
+      alert('Something went wrong..')
     }
   };
 
@@ -172,6 +175,7 @@ const OrderDetails = () => {
               "Pending",
               "Cancelled",
               "Completed",
+              "Delivered"
             ]}
           />
           <button
@@ -191,7 +195,7 @@ const OrderDetails = () => {
                   OUTLET 
                 </th>
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  CUSTOMER ID
+                  CUSTOMER NAME
                 </th>
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">
                   NUMBER OF TRAYS

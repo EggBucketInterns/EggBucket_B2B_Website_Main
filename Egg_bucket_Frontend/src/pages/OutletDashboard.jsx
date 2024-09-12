@@ -22,6 +22,7 @@ const OutletDashboard = () => {
     totalAmtCollected: 0,
     ordersIntransit: 0,
     ordersCancelled: 0,
+    ordersDelivered: 0
   });
 
   const [outlets, setOutlets] = useState([]);
@@ -188,6 +189,13 @@ const OutletDashboard = () => {
           icon={<ClockIcon className="h-6 w-6 text-red-500" />}
           color="bg-red-100"
           onClick={() => handleCardClick("Pending")} // Navigate to order details with 'Pending' status
+        />
+        <StatCard
+          title="Orders Delivered"
+          value={summary.ordersDelivered}
+          icon={<ClockIcon className="h-6 w-6 text-yellow-500" />}
+          color="bg-red-100"
+          onClick={() => handleCardClick("Delivered")} // Navigate to order details with 'Pending' status
         />
       </div>
     </div>
