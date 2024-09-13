@@ -195,7 +195,7 @@ const OrderDetails = () => {
                   OUTLET 
                 </th>
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  CUSTOMER NAME
+                  CUSTOMER ID
                 </th>
                 <th className="text-left p-3 text-sm font-semibold text-gray-600">
                   NUMBER OF TRAYS
@@ -221,7 +221,7 @@ const OrderDetails = () => {
                     {order.outletId ? order.outletId.outletArea+" ID:"+order.outletId.outletNumber : "N/A"}
                   </td>
                   <td className="p-3 text-sm">
-                    {order.customerId ? order.customerId.customerName : "N/A"}
+                    {order.customerId ? order.customerId : "N/A"}
                   </td>
                   <td className="p-3 text-sm">{order.numTrays}</td>
                   <td className="p-3 text-sm">
