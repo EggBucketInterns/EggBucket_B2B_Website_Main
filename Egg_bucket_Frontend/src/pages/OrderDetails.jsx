@@ -221,7 +221,7 @@ const OrderDetails = () => {
                     {order.outletId ? order.outletId.outletArea+" ID:"+order.outletId.outletNumber : "N/A"}
                   </td>
                   <td className="p-3 text-sm">
-                    {order.customerId ? order.customerId.customerName : "N/A"}
+                    {order.customerId ? order.customerId.customerId : "N/A"}
                   </td>
                   <td className="p-3 text-sm">{order.numTrays}</td>
                   <td className="p-3 text-sm">
