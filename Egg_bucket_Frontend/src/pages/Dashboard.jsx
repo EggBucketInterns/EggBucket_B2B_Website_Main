@@ -18,14 +18,27 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('https://eggbucket-website.onrender.com/admin/egg-bucket-b2b/dashboard')
-      .then(response => {
+    const fetchDashboardData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('https://eggbucket-website.onrender.com/admin/egg-bucket-b2b/dashboard', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
         setSummary(response.data);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('There was an error fetching the summary!', error);
-      });
-  }, []);
+        if (error.response && error.response.status === 401) {
+          // Token is invalid or expired
+          localStorage.removeItem('token');
+          navigate('/login');
+        }
+      }
+    };
+
+    fetchDashboardData();
+  }, [navigate]);
 
   const navigateToOrderDetails = (status) => {
     navigate('/order-details', { state: { statusFilter: status } });

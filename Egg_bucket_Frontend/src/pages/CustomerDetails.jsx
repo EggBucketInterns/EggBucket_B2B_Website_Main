@@ -32,7 +32,7 @@ const CustomerDetails = () => {
     // Fetch outlets for the dropdown
     const fetchOutlets = async () => {
       try {
-        const response = await fetch('eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets');
+        const response = await fetch('https://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets');
         const data = await response.json();
         if (response.ok) {
           setOutlets(data.data); // Set the outlets to state
