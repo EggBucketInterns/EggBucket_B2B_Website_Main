@@ -56,6 +56,7 @@ const Sidebar = ({ onLogout }) => {
   const handleItemClick = (path) => {
     if (path === '/logout') {
       onLogout();  // Call the logout function passed as a prop
+      navigate('/login');  // Redirect to the login page after logout
     } else {
       navigate(path);
     }

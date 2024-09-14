@@ -66,7 +66,7 @@ const DeliveryPartnerDetails = () => {
 
        console.log(partnerId)
       try {
-        const response = await fetch(`http://:3577/deliveryDrivers/egg-bucket-b2b/delivery_partner/${partnerId}`, {
+        const response = await fetch(`https://eggbucket-website.onrender.com/deliveryDrivers/egg-bucket-b2b/delivery_partner/${partnerId}`, {
           method: 'DELETE'
         });
          

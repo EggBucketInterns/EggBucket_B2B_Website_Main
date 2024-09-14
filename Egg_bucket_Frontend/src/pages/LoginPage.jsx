@@ -54,6 +54,7 @@ const LoginPage = ({ setIsAuthenticated }) => {
       if (response.ok) {
         const data = await response.json();
         console.log('Login successful!', data);
+        localStorage.setItem('token', data.token); // Store the token
         setIsAuthenticated(true);
         navigate('/'); // Redirect to the dashboard after successful login
       } else if (response.status === 404) {

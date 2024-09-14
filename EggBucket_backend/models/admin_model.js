@@ -15,7 +15,8 @@ const adminSchema = new mongoose.Schema({
  password:{
    type:String,
    required:true
- }
+ },
+ passChangedAt:Date
 
 });
 
@@ -29,6 +30,17 @@ adminSchema.pre('save', async function(next){
 adminSchema.methods.passcheck=async function(p_input,p_actual)
 {
   return await bcrypt.compare(p_input,p_actual)
+}
+
+adminSchema.methods.checkPassChanged=function(jwt_date){
+  if(this.passChangedAt){
+
+   let date=parseInt(this.passChangedAt.getTime()/1000,10)
+   
+   return jwt_date<date
+   
+  }
+  return false
 }
 
 const Admin = mongoose.model("Admin", adminSchema);

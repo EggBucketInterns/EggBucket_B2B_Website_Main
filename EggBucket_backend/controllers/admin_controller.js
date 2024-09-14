@@ -3,6 +3,7 @@ const Outlet = require("../models/outlet_model");
 const Admin = require("../models/admin_model");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const {promisify}=require('util')
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.secrete, {
@@ -171,6 +172,7 @@ exports.changePass = async (req, res) => {
       });
 
     admin.password = newPassword;
+    admin.passChangedAt=Date.now()
     await admin.save();
 
     return res.status(200).json({
@@ -185,3 +187,56 @@ exports.changePass = async (req, res) => {
     });
   }
 };
+
+exports.verify=async (req,res)=>{
+  try{
+     
+    const token=req.headers.authorization;
+    
+    if(!token && !token.startsWith('Bearer')) return res.status(401).json({
+      status:"fail",
+      message:"Bearer token not sent!"
+    })
+    
+    
+    const verification=promisify(jwt.verify)
+
+    const decoded=await verification(token.split(' ')[1],process.env.secrete)
+   
+    
+    
+    const admin=await Admin.findOne({_id:decoded.id})
+    
+    if(!admin) return res.status(401).json({
+      status:"fail",
+      message:"Admin not found, please login again"
+    })
+    
+    
+  //   if(admin.passChangedAt){
+  //   const passChangeTime=parseInt(admin.passChangedAt.getTime()/1000,10)
+    
+    // if(passChangeTime>decoded.iat) return res.status(401).json({
+    //   status:"fail",
+    //   message:"password has changed, login again!"  
+    // })
+  // }
+  if(admin.checkPassChanged(decoded.iat)){
+    return res.status(401).json({
+      status:"fail",
+      message:"password has changed, login again!"  
+    })
+  }
+     
+    res.status(200).json({
+      status:"success"
+    })
+    
+
+  } catch(err){
+      res.status(401).json({
+        status:"fail",
+        message:"Invalid token, please login again"
+      })
+  }
+}
