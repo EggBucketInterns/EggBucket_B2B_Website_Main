@@ -17,7 +17,7 @@ const AddNewOutlet = () => {
 
   useEffect(() => {
     // Fetch all outlets to get the latest outlet number
-    fetch('https://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets')
+    fetch('https://eggbucket-api.onrender.com/egg-bucket-b2b/get-all-outlets')
       .then((response) => response.json())
       .then((data) => {
         if (data.status === 'success') {
@@ -32,7 +32,7 @@ const AddNewOutlet = () => {
 
     // Fetch outlet partners
     fetch(
-      'https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/displayAll-outlet_partner'
+      'https://eggbucket-api.onrender.com/outletPartners/egg-bucket-b2b/displayAll-outlet_partner'
     )
       .then((response) => response.json())
       .then((data) => {
@@ -45,7 +45,7 @@ const AddNewOutlet = () => {
 
     // Fetch delivery partners
     fetch(
-      'https://eggbucket-website.onrender.com/deliveryDrivers/egg-bucket-b2b/displayAll-delivery_partner'
+      'https://eggbucket-api.onrender.com/deliveryDrivers/egg-bucket-b2b/displayAll-delivery_partner'
     )
       .then((response) => response.json())
       .then((data) => {
@@ -118,7 +118,7 @@ const AddNewOutlet = () => {
       formDataToSend.append('img', formData.img);
     }
 
-    fetch('https://eggbucket-website.onrender.com/egg-bucket-b2b/create-outlet', {
+    fetch('https://eggbucket-api.onrender.com/egg-bucket-b2b/create-outlet', {
       method: 'POST',
       body: formDataToSend,
     })

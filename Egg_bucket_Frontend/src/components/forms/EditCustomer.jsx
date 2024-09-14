@@ -33,7 +33,7 @@ const EditCustomer = ({ customer, onClose, onSave }) => {
     }
 
     // Fetch all outlets for dropdown
-    fetch('https://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets')
+    fetch('https://eggbucket-api.onrender.com/egg-bucket-b2b/get-all-outlets')
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
