@@ -26,7 +26,7 @@ var app = express();
 // CORS setup: Allow frontend requests
 app.use(cors(
   {
-  origin: ['https://eggbucket-website-nups.onrender.com'],
+  origin: ['https://eggbucket-b2b-website-main.onrender.com'],
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }
