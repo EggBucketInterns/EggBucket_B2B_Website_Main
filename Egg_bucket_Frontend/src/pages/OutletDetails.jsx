@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Trash, Filter, ChevronDown, Search, RotateCcw } from 'lucide-react';
+import { Edit, Trash, Filter, Search, RotateCcw } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import EditOutlet from '../components/forms/EditOutlet';
 
 const OutletDetails = () => {
@@ -8,7 +9,6 @@ const OutletDetails = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [outlets, setOutlets] = useState([]);
   const [editingOutlet, setEditingOutlet] = useState(null);
-  const [selectedOutlet, setSelectedOutlet] = useState('Outlet');
 
   useEffect(() => {
     const fetchOutlets = async () => {
@@ -38,6 +38,13 @@ const OutletDetails = () => {
     fetchOutlets();
   }, []);
 
+  const exportToSpreadsheet = () => {
+    const worksheet = XLSX.utils.json_to_sheet(outlets);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Outlets');
+    XLSX.writeFile(workbook, 'outlets.xlsx');
+  };
+
   const filteredOutlets = outlets.filter(outlet =>
     Object.values(outlet).some(value => 
       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
@@ -56,11 +63,7 @@ const OutletDetails = () => {
     try {
       const response = await fetch(`https://eggbucket-website.onrender.com/egg-bucket-b2b/update-outlet/${editingOutlet.id}`, {
         method: 'PATCH',
-        // headers: {
-        //   'Content-Type': 'application/json',
-        // },
-        // body: JSON.stringify(formData)
-        body: formData
+        body: formData,
       });
       const data = await response.json();
       if (response.ok) {
@@ -70,38 +73,30 @@ const OutletDetails = () => {
       } else {
         alert('Failed to update Outlet');
       }
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
       console.error('Error updating outlet:', error);
       alert('Error updating outlet');
     }
-    
   };
 
-
-  
   const handleDeleteClick = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this outlet? '+id);
+    const confirmDelete = window.confirm('Are you sure you want to delete this outlet? ' + id);
     if (confirmDelete) {
-
-       console.log(id)
       try {
         const response = await fetch(`https://eggbucket-website.onrender.com/egg-bucket-b2b/delete-outlet/${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
         });
-         const data=await response.json()
+        const data = await response.json();
         if (response.ok) {
           window.location.reload();
           alert('Outlet deleted successfully');
-
         } else {
           alert(data.error);
         }
-     
       } catch (error) {
-        console.error('Error deleting outlet :', error);
+        console.error('Error deleting outlet:', error);
         alert('Error deleting outlet');
-        
       }
     }
   };
@@ -109,7 +104,6 @@ const OutletDetails = () => {
   return (
     <div className="h-full pt-7 flex flex-col">
       <h1 className="text-2xl font-bold mb-4">Outlet Details</h1>
-      
       <div className="bg-white rounded-lg shadow-sm p-4 flex-grow flex flex-col">
         <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
           <div className="flex flex-wrap items-center gap-2">
@@ -117,21 +111,6 @@ const OutletDetails = () => {
               <Filter className="w-4 h-4 mr-2" />
               Filter By
             </button>
-           { 
-            
-            // <div className="relative">
-            //   <select 
-            //     className="appearance-none bg-white border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm"
-            //     value={selectedOutlet}
-            //     onChange={(e) => setSelectedOutlet(e.target.value)}
-            //   >
-            //     <option>Outlet</option>
-            //     {/* Add more outlet options if needed */}
-            //   </select>
-            //   <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            // </div>
-
-            }               
             <div className="relative">
               <input
                 type="text"
@@ -151,12 +130,11 @@ const OutletDetails = () => {
             <button onClick={() => navigate('/contact/newoutlet')} className="px-3 py-2 bg-orange-600 text-white rounded-md text-sm">
               REGISTER NEW OUTLET
             </button>
-            <button className="px-3 py-2 bg-emerald-500 text-white rounded-md text-sm">
+            <button className="px-3 py-2 bg-emerald-500 text-white rounded-md text-sm" onClick={exportToSpreadsheet}>
               SPREADSHEET
             </button>
           </div>
         </div>
-        
         <div className="flex-grow overflow-auto">
           <table className="w-full">
             <thead>
