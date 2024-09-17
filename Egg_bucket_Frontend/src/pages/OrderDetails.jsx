@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Search, Filter, ChevronDown, RotateCcw } from "lucide-react";
+import * as XLSX from 'xlsx'; // Import xlsx
 
 const OrderDetails = () => {
   const location = useLocation();
@@ -128,6 +129,26 @@ const OrderDetails = () => {
     }
   };
 
+  // Function to export orders as a spreadsheet
+  const exportToSpreadsheet = () => {
+    // Create worksheet from orders data
+    const worksheet = XLSX.utils.json_to_sheet(
+      orders.map(order => ({
+        Outlet: order.outletId ? `${order.outletId.outletArea} (ID: ${order.outletId.outletNumber})` : "N/A",
+        Customer: order.customerId ? order.customerId.customerId : "N/A",
+        "Number of Trays": order.numTrays,
+        "Delivery Partner": order.deliveryId ? order.deliveryId.firstName : "N/A",
+        "Amount Collected": `₹${order.amount}`,
+        Status: order.status
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+
+    XLSX.writeFile(workbook, "Orders.xlsx");
+  };
+
   return (
     <div className="h-full flex flex-col bg-gray-50 p-6">
       <div className="flex justify-between items-center mb-6">
@@ -185,6 +206,9 @@ const OrderDetails = () => {
             <RotateCcw className="w-4 h-4 mr-2" />
             Reset Filter
           </button>
+          <button className="px-10 py-2 bg-emerald-500 text-white rounded-md text-sm" onClick={exportToSpreadsheet}>
+              EXPORT TO SPREADSHEET
+            </button>
         </div>
 
         <div className="flex-grow overflow-auto">

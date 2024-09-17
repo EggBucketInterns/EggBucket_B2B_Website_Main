@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, ChevronDown, Search, RotateCcw, Edit, Trash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import EditOutletPartner from '../components/forms/EditOutletPartner';
+import * as XLSX from 'xlsx';
 
 const OutletPartnerDetails = () => {
   const navigate = useNavigate();
@@ -14,13 +16,8 @@ const OutletPartnerDetails = () => {
   // Fetch all outlets
   const fetchOutlets = async () => {
     try {
-      const response = await fetch('https://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets');
-      const data = await response.json();
-      if (response.ok) {
-        setOutletList(data.data);
-      } else {
-        console.error('Error fetching outlets:', data);
-      }
+      const response = await axios.get('https://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets');
+      setOutletList(response.data.data);
     } catch (error) {
       console.error('Error fetching outlets:', error);
     }
@@ -29,12 +26,11 @@ const OutletPartnerDetails = () => {
   // Fetch outlet partners based on outletId
   const fetchOutletPartners = async (query = '') => {
     try {
-      const response = await fetch('https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/displayAll-outlet_partner' + query);
-      const data = await response.json();
-      if (data.status === 'success') {
-        setOutletPartners(data.data);
+      const response = await axios.get('https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/displayAll-outlet_partner' + query);
+      if (response.data.status === 'success') {
+        setOutletPartners(response.data.data);
       } else {
-        console.error('Error fetching outlet partners:', data);
+        console.error('Error fetching outlet partners:', response.data);
       }
     } catch (error) {
       console.error('Error fetching outlet partners:', error);
@@ -49,7 +45,7 @@ const OutletPartnerDetails = () => {
   const handleOutletChange = (e) => {
     const selectedOutlet = e.target.value;
     setOutlet(selectedOutlet);
-    setSearchTerm('')
+    setSearchTerm('');
     // Fetch outlet partners by selected outlet number
     if (selectedOutlet) {
       fetchOutletPartners(`?outletId=${selectedOutlet}`);
@@ -66,13 +62,9 @@ const OutletPartnerDetails = () => {
 
   const handleSaveEdit = async (formData) => {
     try {
-      const response = await fetch(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${editingOutletPartner._id}`, {
-        method: 'PATCH',
-        body: formData,
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setOutletPartners(outletPartners.map(op => op._id === editingOutletPartner._id ? data : op));
+      const response = await axios.patch(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${editingOutletPartner._id}`, formData);
+      if (response.status === 200) {
+        setOutletPartners(outletPartners.map(op => op._id === editingOutletPartner._id ? response.data : op));
         setEditingOutletPartner(null);
         alert('Outlet partner updated successfully');
         navigate(0);
@@ -89,21 +81,32 @@ const OutletPartnerDetails = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this outlet partner?');
     if (confirmDelete) {
       try {
-        const response = await fetch(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${partnerId}`, {
-          method: 'DELETE',
-        });
-        const data = await response.json();
-        if (response.ok) {
+        const response = await axios.delete(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${partnerId}`);
+        if (response.status === 200) {
           setOutletPartners(outletPartners.filter(op => op._id !== partnerId));
           alert('Outlet partner deleted successfully');
         } else {
-          alert(data.error);
+          alert(response.data.error);
         }
       } catch (error) {
         console.error('Error deleting outlet partner:', error);
         alert('Error deleting outlet partner');
       }
     }
+  };
+
+  const exportToSpreadsheet = () => {
+    const ws = XLSX.utils.json_to_sheet(outletPartners.map(partner => ({
+      Name: `${partner.firstName} ${partner.lastName}`,
+      PhoneNo: partner.phoneNumber,
+      AadharNumber: partner.aadharNumber || 'N/A',
+      Photo: partner.img,
+      Password: partner.password || 'N/A'
+    })));
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Outlet Partners');
+    XLSX.writeFile(wb, 'outlet_partners.xlsx');
   };
 
   return (
@@ -151,7 +154,7 @@ const OutletPartnerDetails = () => {
             <button onClick={() => navigate('/contact/newoutletpartner')} className="px-2 py-1 bg-orange-600 text-white rounded-md text-xs">
               REGISTER NEW OUTLET PARTNER
             </button>
-            <button className="px-2 py-1 bg-emerald-500 text-white rounded-md text-xs">
+            <button className="px-2 py-1 bg-emerald-500 text-white rounded-md text-xs" onClick={exportToSpreadsheet}>
               SPREADSHEET
             </button>
           </div>

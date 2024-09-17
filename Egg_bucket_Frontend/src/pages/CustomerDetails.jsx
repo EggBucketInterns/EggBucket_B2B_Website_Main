@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, ChevronDown, Search, RotateCcw, Edit, Trash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
 import EditCustomer from '../components/forms/EditCustomer';
 
 const CustomerDetails = () => {
@@ -13,7 +14,7 @@ const CustomerDetails = () => {
 
   const fetchCustomers = async (query) => {
     try {
-      const response = await fetch('https://eggbucket-website.onrender.com/customers/egg-bucket-b2b/getAllCustomer'+query);
+      const response = await fetch('https://eggbucket-website.onrender.com/customers/egg-bucket-b2b/getAllCustomer' + query);
       const data = await response.json();
       if (response.ok) {
         setCustomers(data);
@@ -83,33 +84,39 @@ const CustomerDetails = () => {
     }
   };
 
-
-  
   const handleDeleteClick = async (Id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this customer?');
     if (confirmDelete) {
-
-       console.log(Id)
       try {
         const response = await fetch(`https://eggbucket-website.onrender.com/customers/egg-bucket-b2b/customer/${Id}`, {
           method: 'DELETE'
         });
-         
         if (response.ok) {
-          
           alert('Customer deleted successfully');
           window.location.reload();
         } else {
           alert('Failed to delete Customer');
         }
-     
       } catch (error) {
         console.error('Error deleting Customer:', error);
         alert('Error deleting Customer');
-       
-        
       }
     }
+  };
+
+  const exportToSpreadsheet = () => {
+    const worksheet = XLSX.utils.json_to_sheet(customers.map(customer => ({
+      CID: customer.customerId || 'NA',
+      OUTLET: customer.outlet ? `${customer.outlet.outletArea} ID:${customer.outlet.outletNumber}` : 'NA',
+      NAME: customer.customerName || 'NA',
+      ADDRESS_URL: customer.location || 'NA',
+      SHOP_NAME: customer.outlet ? customer.outlet.outletArea : 'NA',
+      PHOTO: customer.img || 'NA',
+      PHONE_NO: customer.phoneNumber || 'NA'
+    })));
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Customers');
+    XLSX.writeFile(workbook, 'customers.xlsx');
   };
 
   return (
@@ -146,7 +153,7 @@ const CustomerDetails = () => {
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  setOutlet('Outlet')
+                  setOutlet('Outlet');
                   fetchCustomers(`?customerName=${e.target.value}`);
                 }}
               />
@@ -161,7 +168,7 @@ const CustomerDetails = () => {
             <button onClick={() => navigate('/contact/newcustomer')} className="px-3 py-2 bg-orange-600 text-white rounded-md text-sm">
               REGISTER NEW CUSTOMER
             </button>
-            <button className="px-3 py-2 bg-emerald-500 text-white rounded-md text-sm">
+            <button className="px-3 py-2 bg-emerald-500 text-white rounded-md text-sm" onClick={exportToSpreadsheet}>
               SPREADSHEET
             </button>
           </div>
@@ -182,14 +189,13 @@ const CustomerDetails = () => {
               </tr>
             </thead>
             <tbody>
-           
               {customers.map(customer => (
                 <tr key={customer._id}>
-                  <td className="text-left p-2 text-sm text-gray-600">{customer ? customer.customerId : 'NA'}</td>
-                  <td className="text-left p-2 text-sm text-gray-600">{customer.outlet ? (customer.outlet.outletArea+" ID:"+customer.outlet.outletNumber) : 'NA'}</td>
-                  <td className="text-left p-2 text-sm text-gray-600">{customer ? customer.customerName : 'NA'}</td>
-                  <td className="text-left p-2 text-sm text-gray-600">{customer ? customer.location : 'NA'}</td>
-                  <td className="text-left p-2 text-sm text-gray-600">{customer ? customer.outlet.outletArea : 'NA'}</td>
+                  <td className="text-left p-2 text-sm text-gray-600">{customer.customerId || 'NA'}</td>
+                  <td className="text-left p-2 text-sm text-gray-600">{customer.outlet ? `${customer.outlet.outletArea} ID:${customer.outlet.outletNumber}` : 'NA'}</td>
+                  <td className="text-left p-2 text-sm text-gray-600">{customer.customerName || 'NA'}</td>
+                  <td className="text-left p-2 text-sm text-gray-600">{customer.location || 'NA'}</td>
+                  <td className="text-left p-2 text-sm text-gray-600">{customer.outlet ? customer.outlet.outletArea : 'NA'}</td>
                   <td className="text-left p-2 text-sm text-gray-600">
                     <img src={customer.img} alt={customer.customerName} className="w-12 h-12 object-cover rounded-md" />
                   </td>
@@ -198,7 +204,7 @@ const CustomerDetails = () => {
                     <button className='text-purple-600' onClick={() => handleEditClick(customer)}>
                       <Edit className='w-5 h-5'/>
                     </button>&nbsp;
-                    <button className='text-red-600' onClick={()=>handleDeleteClick(customer._id)}>
+                    <button className='text-red-600' onClick={() => handleDeleteClick(customer._id)}>
                       <Trash className='w-5 h-5'/>
                     </button>
                   </td>
