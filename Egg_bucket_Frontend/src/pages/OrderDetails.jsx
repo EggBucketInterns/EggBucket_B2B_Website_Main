@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Search, Filter, ChevronDown, RotateCcw } from "lucide-react";
 import * as XLSX from 'xlsx'; // Import xlsx
@@ -12,6 +12,8 @@ const OrderDetails = () => {
   const [outletFilter, setOutletFilter] = useState("Outlet");
   const [customerFilter, setCustomerFilter] = useState("Customer");
   const [statusFilter, setStatusFilter] = useState(initialStatusFilter);
+  const [startDate, setStartDate] = useState("");  // New state for start date
+  const [endDate, setEndDate] = useState("");      // New state for end date
   const [orders, setOrders] = useState([]);
   const [outlets, setOutlets] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -82,6 +84,14 @@ const OrderDetails = () => {
         filters.push(`status=${statusFilter.toLowerCase()}`);
       }
 
+      // Apply date filter
+      if (startDate) {
+        filters.push(`createdAt[gte]=${startDate}`);
+      }
+      if (endDate) {
+        filters.push(`createdAt[lte]=${endDate}`);
+      }
+
       if (filters.length) {
         url += `?${filters.join("&")}`;
       }
@@ -96,13 +106,15 @@ const OrderDetails = () => {
     };
 
     fetchFilteredOrders();
-  }, [outletFilter, customerFilter, statusFilter, outlets, customers]);
+  }, [outletFilter, customerFilter, statusFilter, outlets, customers, startDate, endDate]);
 
   const resetFilters = () => {
     setDateFilter("Date");
     setOutletFilter("Outlet");
     setCustomerFilter("Customer");
     setStatusFilter("Status");
+    setStartDate("");  // Reset start date
+    setEndDate("");    // Reset end date
   };
 
   const handleDelete = async (orderId) => {
@@ -116,9 +128,8 @@ const OrderDetails = () => {
       );
 
       if (response.ok) {
-        // Filter out the deleted order from the state
         setOrders((prevOrders) => prevOrders.filter((order) => order._id !== orderId));
-        alert('Oder delected successfully!')
+        alert('Order deleted successfully!')
       } else {
         console.error("Failed to delete the order");
         alert('Order is not in pending or intransit state!')
@@ -129,9 +140,7 @@ const OrderDetails = () => {
     }
   };
 
-  // Function to export orders as a spreadsheet
   const exportToSpreadsheet = () => {
-    // Create worksheet from orders data
     const worksheet = XLSX.utils.json_to_sheet(
       orders.map(order => ({
         Outlet: order.outletId ? `${order.outletId.outletArea} (ID: ${order.outletId.outletNumber})` : "N/A",
@@ -167,10 +176,6 @@ const OrderDetails = () => {
 
       <div className="bg-white rounded-lg shadow-sm p-6 flex-grow flex flex-col">
         <div className="flex flex-wrap items-center gap-4 mb-6">
-          <button className="flex items-center px-4 py-2 bg-gray-100 rounded-full text-sm font-medium">
-            <Filter className="w-4 h-4 mr-2" />
-            Filter By
-          </button>
           <FilterDropdown
             value={outletFilter}
             onChange={setOutletFilter}
@@ -199,6 +204,34 @@ const OrderDetails = () => {
               "Delivered"
             ]}
           />
+          <FilterDropdown
+            value={dateFilter}
+            onChange={setDateFilter}
+            options={["Date", "Choose Start & End Dates"]}
+          />
+          {dateFilter === "Choose Start & End Dates" && (
+            <div className="flex items-center gap-4">
+              <div>
+                <label className="text-sm font-medium">Start Date</label>
+                <input
+                  type="date"
+                  className="ml-2 p-2 border rounded"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">End Date</label>
+                <input
+                  type="date"
+                  className="ml-2 p-2 border rounded"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+
           <button
             className="flex items-center px-4 py-2 text-orange-600 font-medium text-sm"
             onClick={resetFilters}
@@ -208,61 +241,53 @@ const OrderDetails = () => {
           </button>
           <button className="px-10 py-2 bg-emerald-500 text-white rounded-md text-sm" onClick={exportToSpreadsheet}>
               EXPORT TO SPREADSHEET
-            </button>
+          </button>
         </div>
 
         <div className="flex-grow overflow-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50">
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  OUTLET 
-                </th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  CUSTOMER ID
-                </th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  NUMBER OF TRAYS
-                </th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  DELIVERY PARTNER
-                </th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  AMOUNT COLLECTED
-                </th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  STATUS
-                </th>
-                <th className="text-left p-3 text-sm font-semibold text-gray-600">
-                  ACTIONS
-                </th>
+              <tr className="bg-gray-100 text-left text-sm font-medium text-gray-600">
+                {/* <th className="p-4">Order ID</th> */}
+                <th className="p-4">Outlet</th>
+                <th className="p-4">Customer</th>
+                <th className="p-4">Trays</th>
+                <th className="p-4">Delivery Partner</th>
+                <th className="p-4">Amount Collected</th>
+                <th className="p-4">Status</th>
+                <th className="p-4">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
-                <tr key={order._id} className="border-b border-gray-200">
-                  <td className="p-3 text-sm">
-                    {order.outletId ? order.outletId.outletArea+" ID:"+order.outletId.outletNumber : "N/A"}
-                  </td>
-                  <td className="p-3 text-sm">
-                    {order.customerId ? order.customerId.customerId : "N/A"}
-                  </td>
-                  <td className="p-3 text-sm">{order.numTrays}</td>
-                  <td className="p-3 text-sm">
-                    {order.deliveryId ? order.deliveryId.firstName : "N/A"}
-                  </td>
-                  <td className="p-3 text-sm">₹{order.amount}</td>
-                  <td className="p-3">{order.status}</td>
-                  <td className="p-3 text-sm">
-                    <button
-                      className="text-red-600"
-                      onClick={() => handleDelete(order._id)} // Call the delete handler
-                    >
-                      Delete
-                    </button>
-                  </td> {/* New Actions cell */}
-                </tr>
-              ))}
+              {orders
+                .filter((order) => order._id.includes(searchTerm))
+                .map((order) => (
+                  <tr key={order._id} className="border-b text-sm text-gray-700">
+                    {/* <td className="p-4">{order._id}</td> */}
+                    <td className="p-4">
+                      {order.outletId
+                        ? `${order.outletId.outletArea} (ID: ${order.outletId.outletNumber})`
+                        : "N/A"}
+                    </td>
+                    <td className="p-4">
+                      {order.customerId ? order.customerId.customerId : "N/A"}
+                    </td>
+                    <td className="p-4">{order.numTrays}</td>
+                    <td className="p-4">
+                      {order.deliveryId ? order.deliveryId.firstName : "N/A"}
+                    </td>
+                    <td className="p-4">₹{order.amount}</td>
+                    <td className="p-4">{order.status}</td>
+                    <td className="p-4">
+                      <button
+                        className="text-red-500"
+                        onClick={() => handleDelete(order._id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -271,21 +296,37 @@ const OrderDetails = () => {
   );
 };
 
-const FilterDropdown = ({ value, onChange, options }) => (
-  <div className="relative">
-    <select
-      className="appearance-none bg-gray-100 border border-gray-200 rounded-full py-2 pl-4 pr-8 text-sm font-medium"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    >
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
-    <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
-  </div>
-);
+const FilterDropdown = ({ value, onChange, options }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleOptionClick = (option) => {
+    onChange(option);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative inline-block">
+      <button
+        className="flex items-center px-4 py-2 border border-gray-300 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100 focus:outline-none"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {value} <ChevronDown className="w-4 h-4 ml-2" />
+      </button>
+      {isOpen && (
+        <div className="absolute mt-2 py-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
+          {options.map((option) => (
+            <div
+              key={option}
+              className="px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100"
+              onClick={() => handleOptionClick(option)}
+            >
+              {option}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default OrderDetails;
