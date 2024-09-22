@@ -21,7 +21,7 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('https://eggbucket-website.onrender.com/admin/egg-bucket-b2b/dashboard', {
+        const response = await axios.get('http://localhost:3577/admin/egg-bucket-b2b/dashboard', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -103,13 +103,7 @@ const Dashboard = () => {
             icon={<TrendingUp className="text-green-500" />} 
           />
         </div>
-        <div onClick={() => navigateToOrderDetails('Pending')} className="cursor-pointer">
-          <StatCard
-            title="Total Amount Pending"
-            value={`₹${summary.totalAmtCollected || 0}`}
-            icon={<Coins className="text-orange-500" />}
-          />
-        </div>
+        
       </div>
     </div>
   );

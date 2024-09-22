@@ -156,7 +156,7 @@ exports.signin = async (req, res) => {
 exports.changePass = async (req, res) => {
   try {
     const { email, oldPassword, newPassword } = req.body;
-
+    
     if (!oldPassword || !email || !newPassword)
       return res.status(401).json({
         status: "fail",

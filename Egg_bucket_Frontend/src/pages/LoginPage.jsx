@@ -43,7 +43,7 @@ const LoginPage = ({ setIsAuthenticated }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://eggbucket-website.onrender.com/admin/egg-bucket-b2b/admin', {
+      const response = await fetch('http://localhost:3577/admin/egg-bucket-b2b/admin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

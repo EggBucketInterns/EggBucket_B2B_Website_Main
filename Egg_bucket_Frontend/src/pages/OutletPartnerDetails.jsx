@@ -16,7 +16,7 @@ const OutletPartnerDetails = () => {
   // Fetch all outlets
   const fetchOutlets = async () => {
     try {
-      const response = await axios.get('https://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets');
+      const response = await axios.get('http://localhost:3577/egg-bucket-b2b/get-all-outlets');
       setOutletList(response.data.data);
     } catch (error) {
       console.error('Error fetching outlets:', error);
@@ -26,7 +26,7 @@ const OutletPartnerDetails = () => {
   // Fetch outlet partners based on outletId
   const fetchOutletPartners = async (query = '') => {
     try {
-      const response = await axios.get('https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/displayAll-outlet_partner' + query);
+      const response = await axios.get('http://localhost:3577/outletPartners/egg-bucket-b2b/displayAll-outlet_partner' + query);
       if (response.data.status === 'success') {
         setOutletPartners(response.data.data);
       } else {
@@ -62,7 +62,7 @@ const OutletPartnerDetails = () => {
 
   const handleSaveEdit = async (formData) => {
     try {
-      const response = await axios.patch(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${editingOutletPartner._id}`, formData);
+      const response = await axios.patch(`http://localhost:3577/outletPartners/egg-bucket-b2b/outlet_partner/${editingOutletPartner._id}`, formData);
       if (response.status === 200) {
         setOutletPartners(outletPartners.map(op => op._id === editingOutletPartner._id ? response.data : op));
         setEditingOutletPartner(null);
@@ -81,7 +81,7 @@ const OutletPartnerDetails = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this outlet partner?');
     if (confirmDelete) {
       try {
-        const response = await axios.delete(`https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/outlet_partner/${partnerId}`);
+        const response = await axios.delete(`http://localhost:3577/outletPartners/egg-bucket-b2b/outlet_partner/${partnerId}`);
         if (response.status === 200) {
           setOutletPartners(outletPartners.filter(op => op._id !== partnerId));
           alert('Outlet partner deleted successfully');

@@ -24,7 +24,7 @@ const ProtectedRoute = ({ children }) => {
   }, [navigate]);
 
   if (isLoading) {
-    return <div>Loading...</div>; // You can replace this with a loading spinner
+    return <div>Loading...</div>; 
   }
 
   return isVerified ? children : <Navigate to="/login" />;
