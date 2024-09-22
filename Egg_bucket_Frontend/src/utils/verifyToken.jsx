@@ -8,7 +8,7 @@ const verifyToken = async () => {
   }
 
   try {
-    const response = await axios.get('http://localhost:3577/admin/egg-bucket-b2b/verify', {
+    const response = await axios.get('https://eggbucket-website.onrender.com/admin/egg-bucket-b2b/verify', {
       headers: {
         Authorization: `Bearer ${token}`
       }

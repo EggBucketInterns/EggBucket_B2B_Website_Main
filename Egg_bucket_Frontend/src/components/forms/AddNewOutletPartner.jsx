@@ -69,7 +69,7 @@ const AddNewOutletPartner = () => {
       if (photo) form.append('img', photo);
 
       try {
-        const response = await fetch('http://localhost:3577/outletPartners/egg-bucket-b2b/create-outlet_partner', {
+        const response = await fetch('https://eggbucket-website.onrender.com/outletPartners/egg-bucket-b2b/create-outlet_partner', {
           method: 'POST',
           body: form
         });

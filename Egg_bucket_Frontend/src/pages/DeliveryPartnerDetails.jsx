@@ -12,7 +12,7 @@ const DeliveryPartnerDetails = () => {
 
   const fetchDeliveryPartners = async (query) => {
     try {
-      const response = await fetch('http://localhost:3577/deliveryDrivers/egg-bucket-b2b/displayAll-delivery_partner' + query);
+      const response = await fetch('https://eggbucket-website.onrender.com/deliveryDrivers/egg-bucket-b2b/displayAll-delivery_partner' + query);
       const data = await response.json();
       if (Array.isArray(data)) {
         setDeliveryPartners(data);
@@ -38,7 +38,7 @@ const DeliveryPartnerDetails = () => {
 
   const handleSaveEdit = async (formData) => {
     try {
-      const response = await fetch(`http://localhost:3577/deliveryDrivers/egg-bucket-b2b/delivery_partner/${editingPartner._id}`, {
+      const response = await fetch(`https://eggbucket-website.onrender.com/deliveryDrivers/egg-bucket-b2b/delivery_partner/${editingPartner._id}`, {
         method: 'PATCH',
         body: formData
       });
@@ -62,7 +62,7 @@ const DeliveryPartnerDetails = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this delivery partner?');
     if (confirmDelete) {
       try {
-        const response = await fetch(`http://localhost:3577/deliveryDrivers/egg-bucket-b2b/delivery_partner/${partnerId}`, {
+        const response = await fetch(`https://eggbucket-website.onrender.com/deliveryDrivers/egg-bucket-b2b/delivery_partner/${partnerId}`, {
           method: 'DELETE'
         });
         const data = await response.json();
