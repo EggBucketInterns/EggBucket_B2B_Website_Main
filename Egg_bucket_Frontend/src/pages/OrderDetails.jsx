@@ -23,7 +23,7 @@ const OrderDetails = () => {
     const fetchOutlets = async () => {
       try {
         const response = await fetch(
-          "https://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets"
+          "http://localhost:3577/egg-bucket-b2b/get-all-outlets"
         );
         const data = await response.json();
         if (data.status === "success") {
@@ -42,7 +42,7 @@ const OrderDetails = () => {
     const fetchCustomers = async () => {
       try {
         const response = await fetch(
-          "https://eggbucket-website.onrender.com/customers/egg-bucket-b2b/getAllCustomer"
+          "http://localhost:3577/customers/egg-bucket-b2b/getAllCustomer"
         );
         const data = await response.json();
         if (data) {
@@ -59,7 +59,7 @@ const OrderDetails = () => {
   // Fetch filtered orders based on selected filters
   useEffect(() => {
     const fetchFilteredOrders = async () => {
-      let url = "https://eggbucket-website.onrender.com/orders/egg-bucket-b2b/getAllOrder";
+      let url = "http://localhost:3577/orders/egg-bucket-b2b/getAllOrder";
       const filters = [];
 
       if (outletFilter !== "Outlet") {
@@ -148,7 +148,9 @@ const OrderDetails = () => {
         "Number of Trays": order.numTrays,
         "Delivery Partner": order.deliveryId ? order.deliveryId.firstName : "N/A",
         "Amount Collected": `₹${order.amount}`,
-        Status: order.status
+        Status: order.status,
+        "Order Creation Time": order.createdAt ? new Date(order.createdAt).toLocaleString() : "N/A", // New column
+        "Delivery Time": order.deliveryTime ? new Date(order.deliveryTime).toLocaleString() : "N/A" // New column
       }))
     );
 
@@ -181,17 +183,19 @@ const OrderDetails = () => {
             onChange={setOutletFilter}
             options={[
               "Outlet",
-              ...outlets.map((outlet) => `${outlet.outletArea}`),
+              ...outlets.map((outlet) => `${outlet.outletArea}`), // Corrected template literal syntax
             ]}
           />
+
           <FilterDropdown
             value={customerFilter}
             onChange={setCustomerFilter}
             options={[
               "Customer",
-              ...customers.map((customer) => `Customer ${customer.customerId}`),
+              ...customers.map((customer) => `Customer ${customer.customerId}`), // Corrected template literal syntax
             ]}
           />
+
           <FilterDropdown
             value={statusFilter}
             onChange={setStatusFilter}
@@ -239,48 +243,68 @@ const OrderDetails = () => {
             <RotateCcw className="w-4 h-4 mr-2" />
             Reset Filter
           </button>
-          <button className="px-10 py-2 bg-emerald-500 text-white rounded-md text-sm" onClick={exportToSpreadsheet}>
-              EXPORT TO SPREADSHEET
+          <button className="px-2 py-2 bg-emerald-500 text-white rounded-md text-xs" onClick={exportToSpreadsheet}>
+              EXPORT SPREADSHEET
           </button>
         </div>
 
         <div className="flex-grow overflow-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-100 text-left text-sm font-medium text-gray-600">
-                {/* <th className="p-4">Order ID</th> */}
-                <th className="p-4">Outlet</th>
-                <th className="p-4">Customer</th>
-                <th className="p-4">Trays</th>
-                <th className="p-4">Delivery Partner</th>
-                <th className="p-4">Amount Collected</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Actions</th>
+          <table className="w-full bg-white shadow-sm rounded-lg overflow-hidden">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="py-2 px-4 border-b text-sm font-medium">Outlet</th>
+                <th className="py-2 px-4 border-b text-sm font-medium">Customer</th>
+                <th className="py-2 px-4 border-b text-sm font-medium">Number of Trays</th>
+                <th className="py-2 px-4 border-b text-sm font-medium">Delivery Partner</th>
+                <th className="py-2 px-4 border-b text-sm font-medium">Amount Collected</th>
+                <th className="py-2 px-4 border-b text-sm font-medium">Status</th>
+                <th className="py-2 px-4 border-b text-sm font-medium">Order Creation Time</th>
+                <th className="py-2 px-4 border-b text-sm font-medium">Delivery Time</th>
+                <th className="py-2 px-4 border-b text-sm font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
               {orders
-                .filter((order) => order._id.includes(searchTerm))
+                .filter((order) =>
+                  searchTerm === "" ||
+                  order.outletId?.outletArea
+                    ?.toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                )
                 .map((order) => (
-                  <tr key={order._id} className="border-b text-sm text-gray-700">
-                    {/* <td className="p-4">{order._id}</td> */}
-                    <td className="p-4">
+                  <tr key={order._id}>
+                    <td className="py-2 px-4 border-b text-sm">
                       {order.outletId
                         ? `${order.outletId.outletArea} (ID: ${order.outletId.outletNumber})`
                         : "N/A"}
                     </td>
-                    <td className="p-4">
+                    <td className="py-2 px-4 border-b text-sm">
                       {order.customerId ? order.customerId.customerId : "N/A"}
                     </td>
-                    <td className="p-4">{order.numTrays}</td>
-                    <td className="p-4">
+                    <td className="py-2 px-4 border-b text-sm">
+                      {order.numTrays}
+                    </td>
+                    <td className="py-2 px-4 border-b text-sm">
                       {order.deliveryId ? order.deliveryId.firstName : "N/A"}
                     </td>
-                    <td className="p-4">₹{order.amount}</td>
-                    <td className="p-4">{order.status}</td>
-                    <td className="p-4">
+                    <td className="py-2 px-4 border-b text-sm">
+                      ₹{order.amount}
+                    </td>
+                    <td className={`py-2 px-4 border-b text-sm font-medium ${order.status === "Cancelled" ? "text-red-500" : order.status === "Completed" ? "text-emerald-600" : order.status === "Delivered" ? "text-indigo-600" : "text-orange-600"}`}>
+                      {order.status}
+                    </td>
+                    <td className="py-2 px-4 border-b text-sm">
+                      {order.createdAt ? new Date(order.createdAt).toLocaleString() : "N/A"}
+                    </td>
+                    <td className="py-2 px-4 border-b text-sm">
+                      {order.status === "delivered" && order.updatedAt
+                        ? new Date(order.updatedAt).toLocaleString()
+                        : "N/A"}
+                    </td>
+
+                    <td className="py-2 px-4 border-b text-sm">
                       <button
-                        className="text-red-500"
+                        className="px-4 py-2 text-white bg-red-500 rounded"
                         onClick={() => handleDelete(order._id)}
                       >
                         Delete
@@ -296,37 +320,22 @@ const OrderDetails = () => {
   );
 };
 
-const FilterDropdown = ({ value, onChange, options }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const FilterDropdown = ({ value, onChange, options }) => (
+  <div className="relative inline-block">
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="px-4 py-2 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 appearance-none" // Added appearance-none
+    >
+      {options.map((option, index) => (
+        <option key={index} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+  </div>
+);
 
-  const handleOptionClick = (option) => {
-    onChange(option);
-    setIsOpen(false);
-  };
-
-  return (
-    <div className="relative inline-block">
-      <button
-        className="flex items-center px-4 py-2 border border-gray-300 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100 focus:outline-none"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {value} <ChevronDown className="w-4 h-4 ml-2" />
-      </button>
-      {isOpen && (
-        <div className="absolute mt-2 py-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
-          {options.map((option) => (
-            <div
-              key={option}
-              className="px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100"
-              onClick={() => handleOptionClick(option)}
-            >
-              {option}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
 
 export default OrderDetails;
