@@ -23,7 +23,7 @@ const OrderDetails = () => {
     const fetchOutlets = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3577/egg-bucket-b2b/get-all-outlets"
+          "http://https://eggbucket-website.onrender.com/egg-bucket-b2b/get-all-outlets"
         );
         const data = await response.json();
         if (data.status === "success") {
